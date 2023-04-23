@@ -1,17 +1,16 @@
-# python monitor_binance.py BTC/USDT 5 --format json --depth 3
 import asyncio
 import ccxt.async_support as ccxt
 import argparse
 import json
 
 async def main(symbol, delay, output_format, depth):
-    binance = ccxt.binance({
+    okx = ccxt.okx({
         'enableRateLimit': True,
     })
 
     while True:
         try:
-            order_book = await binance.fetch_order_book(symbol, depth)
+            order_book = await okx.fetch_order_book(symbol, depth)
 
             bids = order_book['bids']
             asks = order_book['asks']
@@ -36,10 +35,10 @@ async def main(symbol, delay, output_format, depth):
             print(f"Error: {e}")
             await asyncio.sleep(delay)
         finally:
-            await binance.close()
+            await okx.close()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Monitor the spot price of a trading pair on Binance.")
+    parser = argparse.ArgumentParser(description="Monitor the spot price of a trading pair on OKX.")
     parser.add_argument("symbol", help="Trading pair symbol (e.g., BTC/USDT).")
     parser.add_argument("delay", type=int, help="Time delay between price fetches in seconds.")
     parser.add_argument("--format", choices=['text', 'json'], default='text', help="Output format: text or json.")
