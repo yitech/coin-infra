@@ -9,13 +9,15 @@ def connect_to_mongodb():
     try:
         client = MongoClient(
             "mongodb+srv://coin-time-series.rvdyfea.mongodb.net/?"
-            "authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
-            , serverSelectionTimeoutMS=5000)
+            "authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority",
+            tls=True,
+            tlsCertificateKeyFile='./credentials/X509-cert-8899805363637885850.pem')
         client.server_info()  # Will raise an exception if it cannot connect
     except ServerSelectionTimeoutError as e:
         print(f"Error connecting to MongoDB: {e}")
         return None
     return client
+
 
 async def record(exchange, client, symbol, delay, depth):
     # Connect to the database and collection
@@ -30,8 +32,8 @@ async def record(exchange, client, symbol, delay, depth):
             asks = orderbook['asks']
 
             data = {
-                'timestamp': datetime.now().timestamp()
-                'exchange': exchange.name,
+                'timestamp': datetime.now().timestamp(),
+                'exchange': str(exchange.name),
                 'symbol': symbol,
                 'price': ticker['last'],
                 'bids': bids,
@@ -74,8 +76,8 @@ async def run():
     client = connect_to_mongodb()
 
     await asyncio.gather(
-        record(binance, client, 1, symbol, 10),
-        record(okx, client, 1, symbol, 10)
+        record(binance, client, symbol, 1, 10),
+        record(okx, client, symbol, 1, 10)
     )
 
 if __name__ == "__main__":
