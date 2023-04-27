@@ -46,6 +46,8 @@ async def main(symbol, delay, output_format, depth):
         except Exception as e:
             print(f"Error: {e}")
             await asyncio.sleep(10)
+        finally:
+            await exchange.close()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Monitor the spot price of a trading pair on Binance.")

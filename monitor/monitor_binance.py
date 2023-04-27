@@ -34,7 +34,7 @@ async def main(symbol, delay, output_format, depth):
             await asyncio.sleep(delay)
         except Exception as e:
             print(f"Error: {e}")
-            await asyncio.sleep(delay)
+            await asyncio.sleep(10)
         finally:
             await binance.close()
 
