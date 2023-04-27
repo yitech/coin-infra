@@ -1,21 +1,17 @@
 import argparse
-import json
-import ccxt.async_support as ccxt_async
 import asyncio
+import ccxt.async_support as ccxt_async
+import json
 import os
 
-api_key = 'your_api_key'
-api_secret = 'your_api_secret'
+api_key = '5b26a0c1-cf08-4815-af1c-bb8a4688678a'
+api_secret = 'ED7C623550788523A14CE060CDAD40FD'
 
-exchange = ccxt_async.binance({
-    # 'apiKey': api_key,
-    # 'secret': api_secret,
+exchange = ccxt_async.okx({
+    'apiKey': api_key,
+    'secret': api_secret,
     'enableRateLimit': True,
-    'options': {
-        'defaultType': 'future',
-    },
 })
-
 
 async def main(symbol, delay, output_format, depth):
     while True:
@@ -40,15 +36,15 @@ async def main(symbol, delay, output_format, depth):
                     'bids': bids,
                     'asks': asks,
                 }
-                print(json.dumps(data))
+                print(json.dumps(data, indent=2))
 
             await asyncio.sleep(delay)
         except Exception as e:
             print(f"Error: {e}")
-            await asyncio.sleep(10)
+            await asyncio.sleep(60)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Monitor the spot price of a trading pair on Binance.")
+    parser = argparse.ArgumentParser(description="Monitor the spot price of a trading pair on OKX.")
     parser.add_argument("symbol", help="Trading pair symbol (e.g., BTC/USDT).")
     parser.add_argument("delay", type=int, help="Time delay between price fetches in seconds.")
     parser.add_argument("--format", choices=['text', 'json'], default='text', help="Output format: text or json.")
@@ -57,5 +53,3 @@ if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(args.symbol, args.delay, args.format, args.depth))
-
-
