@@ -3,6 +3,7 @@ import ccxt.async_support as ccxt
 import argparse
 import json
 
+
 async def main(symbol, delay, output_format, depth):
     okx = ccxt.okx({
         'enableRateLimit': True,
