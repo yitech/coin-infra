@@ -19,7 +19,7 @@ The Docker Compose setup includes the following services:
 Navigate to the directory containing the `docker-compose.yml` file and run the following command to start the services:
 
 ```bash
-docker compose up
+docker compose up -d
 ```
 
 You can access Kafka at localhost:9092 and the Confluent Control Center at http://localhost:9021.
