@@ -1,6 +1,9 @@
 requests
 pandas
 ccxt
+websockets
+python-binance
 pymongo
 dnspython
+confluent-kafka
 
