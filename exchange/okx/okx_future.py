@@ -3,8 +3,8 @@ import ccxt.async_support as ccxt
 
 app = FastAPI()
 exchange = ccxt.okx({
-    'apiKey': 'aoh341Mu0rqR97KhZQvhHg5X2RaG1jmZiF45OW1sgXvxt3VcBvKaSfSkcZhPoqpe',
-    'secret': 'JFoNNmkvvTNSVAndP6OvENnUWIpnPhLqn0y3bFRUxW5TF5goUusrMQIkORMSzK8v',
+    'apiKey': '5b26a0c1-cf08-4815-af1c-bb8a4688678a',
+    'secret': 'ED7C623550788523A14CE060CDAD40FD',
     'enableRateLimit': True,
     'options': {
         'defaultType': 'future'
