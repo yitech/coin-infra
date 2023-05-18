@@ -8,4 +8,6 @@ python-binance
 pymongo
 dnspython
 confluent-kafka
+influxdb-client
+flightsql-dbapi
 
