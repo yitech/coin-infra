@@ -29,8 +29,8 @@ async def get_ticker(symbol: str):
     return await exchange.fetch_ticker(symbol)
 
 @app.get("/orderbook")
-async def get_orderbook(symbol: str):
-    return await exchange.fetch_order_book(symbol)
+async def get_orderbook(symbol: str, limit: int):
+    return await exchange.fetch_order_book(symbol, limit)
 
 @app.post("/open_position")
 async def open_position(symbol: str, side: str, amount: float):

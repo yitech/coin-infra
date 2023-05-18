@@ -1,10 +1,19 @@
+import os
 from fastapi import FastAPI
 import ccxt.async_support as ccxt
+import json
+
+# Parse command-line arguments
+config_path = os.environ.get('CONFIG_PATH')
+
+# Read the configuration file
+with open(config_path, 'r') as f:
+    config = json.load(f)
 
 app = FastAPI()
 exchange = ccxt.okx({
-    'apiKey': '5b26a0c1-cf08-4815-af1c-bb8a4688678a',
-    'secret': 'ED7C623550788523A14CE060CDAD40FD',
+    'apiKey': config['api_key'],
+    'secret': config['api_secret'],
     'enableRateLimit': True,
     'options': {
         'defaultType': 'future'
@@ -23,8 +32,8 @@ async def get_ticker(symbol: str):
 
 
 @app.get("/orderbook")
-async def get_orderbook(symbol: str):
-    return await exchange.fetch_order_book(symbol)
+async def get_orderbook(symbol: str, limit: int):
+    return await exchange.fetch_order_book(symbol, limit)
 
 
 @app.post("/open_position")
