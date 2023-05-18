@@ -14,11 +14,13 @@ This is a simple FastAPI application that uses the `ccxt` library to interact wi
 docker build -t binance-app .
 ```
 
-2Run the Docker container:
+2 Run the Docker container:
 
 ```bash
-docker run -d --rm --name=binancefuture -p 40000:40000 --network=coin-network binance-app
+docker run -it --rm --name=binancefuture -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json -p 40000:40000 --network=coin-network binance-app
 ```
+
+- -v should be "$(pwd)"/config_btc_usdt_perp.json:/app/config.json
 
 The application is now running at `http://localhost:40000`.
 
