@@ -11,16 +11,16 @@ This is a simple FastAPI application that uses the `ccxt` library to interact wi
 1 Build the Docker image:
 
 ```bash
-docker build -t binance-app .
+docker build -t okx-app .
 ```
 
 2Run the Docker container:
 
 ```bash
-docker run --rm -p 40000:40000 binance-app
+docker run --rm -p 40001:40001 okx-app
 ```
 
-The application is now running at `http://localhost:40000`.
+The application is now running at `http://localhost:40001`.
 
 ## API Endpoints
 
