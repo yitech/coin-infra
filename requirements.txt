@@ -2,6 +2,8 @@ requests
 pandas
 ccxt
 websockets
+fastapi
+uvicorn[standard]
 python-binance
 pymongo
 dnspython

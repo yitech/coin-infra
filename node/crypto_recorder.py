@@ -1,9 +1,8 @@
 import ccxt.async_support as ccxt_async
-import asyncio
 
 
-class BinanceFutureRPC:
-    def __init__(self, name: str, exchange_id: str, api_key: str, api_secret: str, kafka_server: str):
+class BinanceFuture:
+    def __init__(self, name: str, api_key: str, api_secret: str):
         self.name: str = name
 
         self.exchange = ccxt_async.binance({
@@ -15,25 +14,13 @@ class BinanceFutureRPC:
             },
         })
 
-        self.kafka_server: str = kafka_server
-        self.producer = P
-
-    async def fetch_ticket(self, symbol, target):
+    async def fetch_ticker(self, symbol):
         ticker = await self.exchange.fetch_ticker(symbol)
+        return ticker
 
-
-    def run(self, exchange_id: str, symbol: str, period: float, depth: int):
-        # Initialize the exchange
-        exchange = getattr(ccxt, exchange_id)()
-
-        # Load markets
-        exchange.load_markets()
-
-        # Fetch order book
-        order_book = exchange.fetch_order_book(symbol)
-
-        # Return the order book
-        return order_book
+    async def fetch_order_book(self, symbol):
+        orderbook = await self.exchange.fetch_order_book(symbol)
+        return orderbook
 
 
 
