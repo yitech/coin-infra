@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import ccxt.async_support as ccxt
 
 app = FastAPI()
-exchange = ccxt.okx({
+exchange = ccxt.binance({
     'apiKey': 'aoh341Mu0rqR97KhZQvhHg5X2RaG1jmZiF45OW1sgXvxt3VcBvKaSfSkcZhPoqpe',
     'secret': 'JFoNNmkvvTNSVAndP6OvENnUWIpnPhLqn0y3bFRUxW5TF5goUusrMQIkORMSzK8v',
     'enableRateLimit': True,
