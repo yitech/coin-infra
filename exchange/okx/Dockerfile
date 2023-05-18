@@ -19,4 +19,4 @@ RUN pip install --no-cache-dir fastapi uvicorn[standard] ccxt
 EXPOSE 40001
 
 # Run app.py when the container launches, replace main with your filename without the .py extension
-CMD ["uvicorn", "binance_future:app", "--host", "0.0.0.0", "--port", "40001"]
+CMD ["uvicorn", "okx_future:app", "--host", "0.0.0.0", "--port", "40001"]
