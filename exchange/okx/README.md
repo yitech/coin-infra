@@ -17,7 +17,7 @@ docker build -t okx-app .
 2Run the Docker container:
 
 ```bash
-docker run --rm -p 40001:40001 okx-app
+docker run -d --rm -p 40001:40001 okx-app
 ```
 
 The application is now running at `http://localhost:40001`.

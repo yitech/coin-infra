@@ -17,7 +17,7 @@ docker build -t binance-app .
 2Run the Docker container:
 
 ```bash
-docker run --rm -p 40000:40000 binance-app
+docker run -d --rm -p 40000:40000 binance-app
 ```
 
 The application is now running at `http://localhost:40000`.
