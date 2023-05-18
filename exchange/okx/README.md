@@ -14,10 +14,10 @@ This is a simple FastAPI application that uses the `ccxt` library to interact wi
 docker build -t okx-app .
 ```
 
-2Run the Docker container:
+2 Run the Docker container:
 
 ```bash
-docker run -d --rm -p 40001:40001 okx-app
+docker run -d --rm --name=okxfuture -p 40001:40001 --network=coin-network okx-app
 ```
 
 The application is now running at `http://localhost:40001`.
