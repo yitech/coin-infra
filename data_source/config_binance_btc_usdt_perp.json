@@ -1,0 +1,11 @@
+{
+  "kafka_url": "kafka-kafka-1:9092",
+  "symbol": "BTC/USDT",
+
+  "exchange": "binance",
+
+  "topic": "orderbook",
+  "endpoints": "http://binancefuture:40000/orderbook?symbol=BTC/USDT&limit=10",
+
+  "sleep": 1.0
+}

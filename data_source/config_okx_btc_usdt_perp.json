@@ -1,0 +1,11 @@
+{
+  "kafka_url": "kafka-kafka-1:9092",
+  "symbol": "BTC/USDT",
+
+  "exchange": "okx",
+
+  "topic": "orderbook",
+  "endpoints": "http://okxfuture:40001/orderbook?symbol=BTC/USDT&limit=10",
+
+  "sleep": 1.0
+}

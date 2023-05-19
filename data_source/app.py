@@ -13,6 +13,17 @@ config_path = os.environ.get('CONFIG_PATH')
 with open(config_path, 'r') as f:
     config = json.load(f)
 
+# The Kafka configuration, change as needed
+kafka_config = {
+    'bootstrap.servers': config['kafka_url']
+}
+topic = 'your_topic'
+
+# The URL to request data from every second
+url = 'http://example.com/your_endpoint'
+
+
+
 async def fetch(session, url):
     print(f"Fetching URL: {url}")
     async with session.get(url) as response:
