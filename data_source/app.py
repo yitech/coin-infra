@@ -29,7 +29,7 @@ async def sub_pub_data(session, url, producer, metadata):
     async with session.get(url) as resp:
         data = await resp.json()
         data.update(metadata)
-        producer.produce(topic, data)
+        producer.produce(topic, json.dumps(data).encode('utf-8'))
         result = producer.flush(timeout=flush_timeout)
         if result > 0:
             raise KafkaError("Failed to flush all messages within the given timeout")

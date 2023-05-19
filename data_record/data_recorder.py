@@ -1,49 +1,77 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Dict, Any
-import time
-import influxdb_client
-
+import os
+import json
+from confluent_kafka import Consumer, KafkaException
 from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import ASYNCHRONOUS
+from influxdb_client.client.write_api import SYNCHRONOUS
 
-app = FastAPI()
+# Parse command-line arguments
+config_path = os.environ.get('CONFIG_PATH')
 
-# setup connection
-token = "4tHRvseKoN8TfRm0pNmGoJIiDnblMEzJlM-XpYLXbm5e_LgtPipx38rXmZphsTNasFJ2o148ji-amFu3d6t7YA=="
-org = "Dev Team"
-url = "https://us-east-1-1.aws.cloud2.influxdata.com"
+# Read the configuration file
+with open(config_path, 'r') as f:
+    config = json.load(f)
+
+# Set up Kafka consumer
+kafka_conf = {
+    'bootstrap.servers': config['kafka_url'], # adapt to your Kafka setup
+    'group.id': config['group_id'],
+    'auto.offset.reset': 'earliest',
+}
+c = Consumer(kafka_conf)
+
+# Subscribe to Kafka topic
+c.subscribe([config['topic']])  # replace 'my-topic' with your topic
+
+# Set up InfluxDB client
+influx_conf = {
+    'url': config['influx_url'],
+    'token': config['influx_token'],
+    'org': config['influx_org'],
+    'bucket': config['influx_bucket']
+}
+
+client = InfluxDBClient(url=influx_conf['url'], token=influx_conf['token'])
+write_api = client.write_api(write_options=SYNCHRONOUS)
+
+try:
+    while True:
+        msg = c.poll(1.0)  # Poll Kafka for messages
+
+        if msg is None:
+            continue
+        if msg.error():
+            raise KafkaException(msg.error())
+        else:
+            # Parse Kafka message
+            data = json.loads(msg.value().decode('utf-8'))  # assuming messages are JSON
+
+            # Prepare data for InfluxDB
+            point_main = Point("main_data")
+            point_main = point_main.tag("id", data["id"])
+            point_main = point_main.tag("exchange", data["exchange"])
+            point_main = point_main.field("nonce", data["nonce"])
+            point_main = point_main.field("timestamp", data["timestamp"])
+
+            write_api.write(bucket=influx_conf['bucket'], org=influx_conf['org'], record=point_main)
+
+            for bid in data["bids"]:
+                point_bid = Point("bids")
+                point_bid = point_bid.tag("id", data["id"])
+                point_bid = point_bid.field("price", bid[0])
+                point_bid = point_bid.field("size", bid[1])
+                write_api.write(bucket=influx_conf['bucket'], org=influx_conf['org'], record=point_bid)
+            
+            for ask in data["asks"]:
+                point_ask = Point("asks")
+                point_ask = point_ask.tag("id", data["id"])
+                point_ask = point_ask.field("price", ask[0])
+                point_ask = point_ask.field("size", ask[1])
+                write_api.write(bucket=influx_conf['bucket'], org=influx_conf['org'], record=point_ask)
 
 
-class InfluxRecorder:
-    def __init__(self, token, org, url):
-        self.client = InfluxDBClient(url=url, token=token)
-        self.org = org
-        self.write_api = self.client.write_api(write_options=ASYNCHRONOUS)
-
-    def insert(self, bucket, payload):
-        data_price = Point("stock_price").field("price", payload.price).time(payload.timestamp, WritePrecision.NS)
-        data_ask = [Point("orderbook_ask").field("ask_price", price).field("ask_size", size).time(payload.timestamp, WritePrecision.NS) for price, size in payload.orderbook["ask"]]
-        data_bid = [Point("orderbook_bid").field("bid_price", price).field("bid_size", size).time(payload.timestamp, WritePrecision.NS) for price, size in payload.orderbook["bid"]]
-        self.write_api.write(bucket, self.org, data_price + data_ask + data_bid)
-
-    def close(self):
-        self.client.close()
-
-app = FastAPI()
-
-class StockData(BaseModel):
-    timestamp: int
-    price: float
-    orderbook: dict
-
-recorder = InfluxRecorder(token=token, org=org, url=url)
-
-@app.post("/insert")
-async def insert_stock_data(bucket: str, data: StockData):
-    recorder.insert(bucket, data)
-    return {"message": "Data inserted successfully"}
-
-@app.on_event("shutdown")
-def shutdown_event():
-    recorder.close()
+except KeyboardInterrupt:
+    pass
+finally:
+    c.close()
+    write_api.close()
+    client.close()
