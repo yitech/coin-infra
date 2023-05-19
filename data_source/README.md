@@ -12,7 +12,7 @@ docker build -t data_source .
 ```
 
 ```bash
-docker run --rm -p 39000:39000 --network=coin-network data_source
+docker run --rm -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json -p 39000:39000 --network=coin-network data_source
 ```
 
 
