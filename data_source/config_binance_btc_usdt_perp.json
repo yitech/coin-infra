@@ -5,7 +5,7 @@
   "exchange": "binance",
 
   "topic": "orderbook",
-  "endpoints": "http://binancefuture:40000/orderbook?symbol=BTC/USDT&limit=10",
+  "endpoint": "http://binancefuture:40000/orderbook?symbol=BTC/USDT&limit=10",
 
   "sleep": 1.0
 }

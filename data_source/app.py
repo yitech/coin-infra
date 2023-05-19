@@ -1,10 +1,10 @@
-import datetime
+from datetime import datetime,  timedelta
 import os
 import asyncio
 import aiohttp
 import json
 import uuid
-from confluent_kafka import Producer
+from confluent_kafka import Producer, KafkaError
 
 # Parse command-line arguments
 config_path = os.environ.get('CONFIG_PATH')
@@ -17,53 +17,38 @@ with open(config_path, 'r') as f:
 kafka_config = {
     'bootstrap.servers': config['kafka_url']
 }
-topic = 'your_topic'
+topic = config['topic']
 
 # The URL to request data from every second
-url = 'http://example.com/your_endpoint'
+url = config['endpoint']
 
+# The flush timeout, in seconds
+flush_timeout = 10.0
 
-
-async def fetch(session, url):
-    print(f"Fetching URL: {url}")
-    async with session.get(url) as response:
-        data = await response.json()
-        print(f"Data fetched from {url}: {data}")
-        return data
-
-async def fetch_all(urls, loop):
-    async with aiohttp.ClientSession(loop=loop) as session:
-        results = await asyncio.gather(*[fetch(session, url) for url in urls], return_exceptions=True)
-        return results
-
-def send_to_kafka(data):
-    conf = {'bootstrap.servers': config['kafka_url']}
-    producer = Producer(conf)
-
-    for i, item in enumerate(data):
-        print(f"Sending data_{i} to Kafka: {item}")
-        producer.produce(config['topic'], key=f'data_{i}', value=json.dumps(item))
-
-    print("Data sent to Kafka, waiting for it to be written...")
-    producer.flush()
-    print("Data written to Kafka successfully.")
-
+async def sub_pub_data(session, url, producer, metadata):
+    async with session.get(url) as resp:
+        data = await resp.json()
+        data.update(metadata)
+        producer.produce(topic, data)
+        result = producer.flush(timeout=flush_timeout)
+        if result > 0:
+            raise KafkaError("Failed to flush all messages within the given timeout")
 
 async def main():
-    urls = list(config['endpoints'].values())
-    while True:
-        loop = asyncio.get_event_loop()
-        print("Starting to fetch data from URLs...")
-        htmls = await fetch_all(urls, loop)
-        print("Finished fetching data, sending to Kafka...")
-        send_to_kafka(htmls)
-        print("Sleeping for 1 second before next fetch...")
-        await asyncio.sleep(1)  # Sleep for a second
+    producer = Producer(kafka_config)
+    metadata = {
+        'id': uuid.uuid4().hex,
+        'exchange': config['exchange'],
+        'symbol': config['symbol']
+    }
+    async with aiohttp.ClientSession() as session:
+        while True:
+            now = datetime.now()
+            trigger_time = (now + timedelta(seconds=1)).replace(microsecond=0)
+            await asyncio.sleep((trigger_time - now).total_seconds())
+            await sub_pub_data(session, url, producer, metadata)
+            
 
+# Run the main function
 loop = asyncio.get_event_loop()
-try:
-    print("Starting main loop...")
-    loop.run_until_complete(main())
-finally:
-    print("Closing main loop...")
-    loop.close()
+loop.run_until_complete(main())
