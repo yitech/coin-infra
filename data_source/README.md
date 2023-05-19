@@ -15,5 +15,7 @@ docker build -t data_source .
 docker run --rm -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json -p 39000:39000 --network=coin-network data_source
 ```
 
+- -v should be "$(pwd)"/config_btc_usdt_perp.json:/app/config.json
+
 
 

@@ -1,9 +1,9 @@
+import datetime
 import os
-from fastapi import FastAPI
 import asyncio
 import aiohttp
 import json
-import time
+import uuid
 from confluent_kafka import Producer
 
 # Parse command-line arguments
@@ -13,73 +13,46 @@ config_path = os.environ.get('CONFIG_PATH')
 with open(config_path, 'r') as f:
     config = json.load(f)
 
-app = FastAPI()
+async def fetch(session, url):
+    print(f"Fetching URL: {url}")
+    async with session.get(url) as response:
+        data = await response.json()
+        print(f"Data fetched from {url}: {data}")
+        return data
 
-# Initialize the Kafka Producer
-p = Producer({'bootstrap.servers': config['kafka_url']})
+async def fetch_all(urls, loop):
+    async with aiohttp.ClientSession(loop=loop) as session:
+        results = await asyncio.gather(*[fetch(session, url) for url in urls], return_exceptions=True)
+        return results
 
-# Function to handle Kafka delivery reports
-def delivery_report(err, msg):
-    if err is not None:
-        print(f'Message delivery failed: {err}')
-    else:
-        print(f'Message delivered to {msg.topic()} [{msg.partition()}]')
+def send_to_kafka(data):
+    conf = {'bootstrap.servers': config['kafka_url']}
+    producer = Producer(conf)
 
-async def fetch_data(session, url1, url2):
-    try:
-        orderbook1
-        async with session.get(url) as resp:
-            data = await resp.text()
-            return json.loads(data)
-    except Exception as e:
-        print(f"Failed to fetch from {url}: {e}")
-        return None
+    for i, item in enumerate(data):
+        print(f"Sending data_{i} to Kafka: {item}")
+        producer.produce(config['topic'], key=f'data_{i}', value=json.dumps(item))
 
-def publish_data(data):
-    if data is not None:
-        p.produce(config['topic'], value=json.dumps(data), callback=delivery_report)
-        p.poll(0) # This line is important for the Producer to serve delivery callbacks
+    print("Data sent to Kafka, waiting for it to be written...")
+    producer.flush()
+    print("Data written to Kafka successfully.")
 
 
-async def fetch_and_publish(session, endpoints):
-    data = await fetch_data(session, endpoints)
-    publish_data(data)
+async def main():
+    urls = list(config['endpoints'].values())
+    while True:
+        loop = asyncio.get_event_loop()
+        print("Starting to fetch data from URLs...")
+        htmls = await fetch_all(urls, loop)
+        print("Finished fetching data, sending to Kafka...")
+        send_to_kafka(htmls)
+        print("Sleeping for 1 second before next fetch...")
+        await asyncio.sleep(1)  # Sleep for a second
 
-
-class Listener:
-    def __init__(self, endpoints):
-        self.endpoints = endpoints
-        self.task = None
-
-    async def start(self):
-        if self.task is None:
-            self.task = asyncio.create_task(self._run())
-
-    async def stop(self):
-        if self.task is not None:
-            self.task.cancel()
-            self.task = None
-
-    async def _run(self):
-
-        while True:
-            async with aiohttp.ClientSession() as session:
-                await fetch_and_publish(session, self.endpoints)
-                time.sleep(config["sleep"])  # Sleep for one second
-
-listener = Listener(config["endpoints"])
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    await listener.stop()
-    p.flush()
-
-@app.get("/start")
-async def start_listener():
-    await listener.start()
-    return {"status": "Started listener"}
-
-@app.get("/stop")
-async def stop_listener():
-    await listener.stop()
-    return {"status": "Stopped listener"}
+loop = asyncio.get_event_loop()
+try:
+    print("Starting main loop...")
+    loop.run_until_complete(main())
+finally:
+    print("Closing main loop...")
+    loop.close()

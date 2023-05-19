@@ -20,6 +20,8 @@ docker build -t okx-app .
 docker run -d --rm --name=okxfuture -p 40001:40001 -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network okx-app
 ```
 
+- -v should be "$(pwd)"/config_btc_usdt_perp.json:/app/config.json
+
 The application is now running at `http://localhost:40001`.
 
 ## API Endpoints
