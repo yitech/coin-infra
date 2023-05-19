@@ -29,7 +29,7 @@ The application is now running at `http://localhost:40000`.
 The following endpoints are available:
 
 - `GET /ticker?symbol=<symbol>`: Fetches the ticker for the specified symbol.
-- `GET /orderbook?symbol=<symbol>`: Fetches the order book for the specified symbol.
+- `GET /orderbook?symbol=<symbol>&limit=<limit>`: Fetches the order book for the specified symbol.
 - `POST /open_position`: Opens a position with a market order. The request body should be a JSON object with `symbol`, `side` ('buy' or 'sell'), and `amount` (the amount to buy or sell).
 - `POST /close_position`: Closes a position with a market order. The request body should be a JSON object with the `symbol`.
 

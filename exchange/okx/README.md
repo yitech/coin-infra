@@ -17,7 +17,7 @@ docker build -t okx-app .
 2 Run the Docker container:
 
 ```bash
-docker run -d --rm --name=okxfuture -p 40001:40001 --network=coin-network okx-app
+docker run -d --rm --name=okxfuture -p 40001:40001 -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network okx-app
 ```
 
 The application is now running at `http://localhost:40001`.
@@ -27,7 +27,7 @@ The application is now running at `http://localhost:40001`.
 The following endpoints are available:
 
 - `GET /ticker?symbol=<symbol>`: Fetches the ticker for the specified symbol.
-- `GET /orderbook?symbol=<symbol>`: Fetches the order book for the specified symbol.
+- `GET /orderbook?symbol=<symbol>&limit=<limit>`: Fetches the order book for the specified symbol.
 - `POST /open_position`: Opens a position with a market order. The request body should be a JSON object with `symbol`, `side` ('buy' or 'sell'), and `amount` (the amount to buy or sell).
 - `POST /close_position`: Closes a position with a market order. The request body should be a JSON object with the `symbol`.
 
