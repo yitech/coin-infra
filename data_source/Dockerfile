@@ -15,5 +15,5 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir fastapi uvicorn[standard] confluent-kafka aiohttp
 
-# Run app.py when the container launches, replace main with your filename without the .py extension
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "39000"]
+# Run app.py when the container launches
+CMD ["python", "app.py"]
