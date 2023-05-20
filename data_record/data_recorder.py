@@ -32,7 +32,7 @@ influx_conf = {
 
 client = InfluxDBClient(url=influx_conf['url'], token=influx_conf['token'])
 write_api = client.write_api(write_options=SYNCHRONOUS)
-
+count = 0
 try:
     while True:
         msg = c.poll(1.0)  # Poll Kafka for messages
@@ -44,7 +44,8 @@ try:
         else:
             # Parse Kafka message
             data = json.loads(msg.value().decode('utf-8'))  # assuming messages are JSON
-            print(data)
+            print(count, data)
+            count += 1
             # Prepare data for InfluxDB
             point_main = Point("orderbook")
             point_main = point_main.tag("id", data["id"])

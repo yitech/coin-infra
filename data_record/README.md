@@ -8,11 +8,11 @@ The service can be run locally using Python, or using Docker.
 
 ### Running with Docker
 ```bash
-docker build -t data_recorder .
+docker build -t data-recorder .
 ```
 
 ```bash
-docker run --rm -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network data_recorder
+docker run --rm -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network data-recorder
 ```
 
 - -v should be "$(pwd)"/config.json:/app/config.json
