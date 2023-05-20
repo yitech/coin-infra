@@ -26,6 +26,7 @@ url = config['endpoint']
 flush_timeout = 10.0
 
 async def sub_pub_data(session, url, producer, metadata):
+    metadata.update({'id': uuid.uuid4().hex})
     async with session.get(url) as resp:
         data = await resp.json()
         data.update(metadata)
@@ -37,7 +38,6 @@ async def sub_pub_data(session, url, producer, metadata):
 async def main():
     producer = Producer(kafka_config)
     metadata = {
-        'id': uuid.uuid4().hex,
         'exchange': config['exchange'],
         'symbol': config['symbol']
     }

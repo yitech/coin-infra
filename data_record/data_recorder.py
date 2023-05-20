@@ -44,7 +44,7 @@ try:
         else:
             # Parse Kafka message
             data = json.loads(msg.value().decode('utf-8'))  # assuming messages are JSON
-
+            print(data)
             # Prepare data for InfluxDB
             point_main = Point("orderbook")
             point_main = point_main.tag("id", data["id"])
