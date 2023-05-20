@@ -46,10 +46,9 @@ try:
             data = json.loads(msg.value().decode('utf-8'))  # assuming messages are JSON
 
             # Prepare data for InfluxDB
-            point_main = Point("main_data")
+            point_main = Point("orderbook")
             point_main = point_main.tag("id", data["id"])
             point_main = point_main.tag("exchange", data["exchange"])
-            point_main = point_main.field("nonce", data["nonce"])
             point_main = point_main.field("timestamp", data["timestamp"])
 
             write_api.write(bucket=influx_conf['bucket'], org=influx_conf['org'], record=point_main)
