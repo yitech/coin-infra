@@ -1,11 +1,9 @@
 {
   "kafka_url": "localhost:9091",
-  "symbol": "BTC/USDT",
-
-  "exchange": "okx",
-
   "topic": "orderbook",
-  "endpoint": "http://localhost:40001/orderbook?symbol=BTC/USDT&limit=10",
 
-  "sleep": 1.0
+  "symbol": "BTC/USDT",
+  "exchange": "okx",
+  
+  "url": "http://localhost:40001/orderbook?symbol=BTC/USDT&limit=10"
 }
