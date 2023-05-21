@@ -2,10 +2,11 @@ import os
 import json
 from confluent_kafka import Consumer, KafkaException
 from influxdb_client import InfluxDBClient, Point, WritePrecision
-from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client.client.write_api import ASYNCHRONOUS
 
 # Parse command-line arguments
 config_path = os.environ.get('CONFIG_PATH')
+config_path = 'config.json'
 
 # Read the configuration file
 with open(config_path, 'r') as f:
@@ -31,12 +32,11 @@ influx_conf = {
 }
 
 client = InfluxDBClient(url=influx_conf['url'], token=influx_conf['token'])
-write_api = client.write_api(write_options=SYNCHRONOUS)
+write_api = client.write_api(write_options=ASYNCHRONOUS)
 count = 0
 try:
     while True:
-        msg = c.poll(1.0)  # Poll Kafka for messages
-
+        msg = c.poll(1)  # Poll Kafka for messages
         if msg is None:
             continue
         if msg.error():
@@ -44,8 +44,8 @@ try:
         else:
             # Parse Kafka message
             data = json.loads(msg.value().decode('utf-8'))  # assuming messages are JSON
-            print(count, data)
-            count += 1
+            print(data)
+            
             # Prepare data for InfluxDB
             point_main = Point("orderbook")
             point_main = point_main.tag("id", data["id"])
