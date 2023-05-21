@@ -19,7 +19,7 @@ docker run --rm --name <source-name> -v path/to/config.json:/app/config.json -e 
 
 ### Production command
 ```bash
-docker run --rm --name btc-source -v "$(pwd)"/config_binance_btc_usdt_perp.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network data-source
+docker run --rm --name bn-btc-source -v "$(pwd)"/config_binance_btc_usdt_perp.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network data-source
 ```
 
 

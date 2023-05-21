@@ -1,5 +1,6 @@
 from datetime import datetime,  timedelta
 import os
+import sys
 import asyncio
 import aiohttp
 import json
@@ -7,14 +8,11 @@ import uuid
 from confluent_kafka import Producer, KafkaError
 
 # Parse command-line arguments
-config_path = os.environ.get('CONFIG_PATH')
-config_path = 'config_test.json'
+config_path = sys.argv[1]
 
 # Read the configuration file
 with open(config_path, 'r') as f:
     config = json.load(f)
-
-print(f"Configuration: {config}")
 
 # The Kafka configuration, change as needed
 kafka_config = {
@@ -43,6 +41,7 @@ async def sub_pub_data(session, url, producer, metadata):
             print(f"Successfully produced message to Kafka topic: {topic}")
 
 async def main():
+    print(f"Configuration: {config}\n")
     producer = Producer(kafka_config)
     metadata = {
         'exchange': config['exchange'],

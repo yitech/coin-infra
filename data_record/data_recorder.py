@@ -1,12 +1,12 @@
 import os
+import sys
 import json
 from confluent_kafka import Consumer, KafkaException
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import ASYNCHRONOUS
 
 # Parse command-line arguments
-config_path = os.environ.get('CONFIG_PATH')
-config_path = 'config.json'
+config_path = sys.argv[1]
 
 # Read the configuration file
 with open(config_path, 'r') as f:
