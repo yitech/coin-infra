@@ -5,5 +5,5 @@
   "symbol": "ETH/USDT",
   "exchange": "binance",
   
-  "url": "http://localhost:40000/orderbook?symbol=ETH/USDT&limit=10",
+  "url": "http://localhost:40000/orderbook?symbol=ETH/USDT&limit=10"
 }

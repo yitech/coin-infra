@@ -16,3 +16,8 @@ docker run --rm -v path/to/config.json:/app/config.json -e CONFIG_PATH=/app/conf
 ```
 
 - -v should be "$(pwd)"/config.json:/app/config.json
+
+### Running without Docker
+```bash
+nohup python data_recorder.py --config config.json >> consumer.log 2>&1 &
+```

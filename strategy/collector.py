@@ -35,7 +35,9 @@ async def main(config_path):
         config = json.load(f)
     url = config['url']
     producer = Producer({'bootstrap.servers': config['kafka_url']})
-    metadata = {'exchange': config['exchange']}
+    metadata = {
+        'exchange': config['exchange']
+        }
     
     async with aiohttp.ClientSession() as session:
         while True:

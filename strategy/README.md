@@ -22,6 +22,14 @@ docker run --rm --name <source-name> -v path/to/config.json:/app/config.json -e 
 docker run --rm --name bn-btc-source -v "$(pwd)"/config_binance_btc_usdt_perp.json:/app/config.json -e CONFIG_PATH=/app/config.json --network=coin-network data-source
 ```
 
+### Run without docker
+```bash
+nohup python collector.py --config config_binance_btc_usdt_perp.json >> binance_btc_usdt_perp.log 2>&1 &
+nohup python collector.py --config config_binance_eth_usdt_perp.json >> binance_eth_usdt_perp.log 2>&1 &
+nohup python collector.py --config config_okx_btc_usdt_perp.json >> okx_btc_usdt_perp.log 2>&1 &
+nohup python collector.py --config config_okx_eth_usdt_perp.json >> okx_eth_usdt_perp.log 2>&1 &
+```
+
 
 
 
