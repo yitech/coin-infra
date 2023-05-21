@@ -11,3 +11,5 @@ credentials
 
 # log
 *.txt
+*.log
+
