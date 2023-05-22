@@ -13,3 +13,5 @@ credentials
 *.txt
 *.log
 
+# VSCode
+.vscode

@@ -3,7 +3,7 @@
   "kafka_topic": "orderbook",
   "partition": 0,
 
-  "symbol": "BTC/USDT",
+  "symbol": "ETH/USDT",
   "exchange": "binance",
-  "websocket_url": "wss://stream.binance.com:9443/ws/btcusdt@depth5@100ms"
+  "websocket_url": "wss://stream.binance.com:9443/ws/ethusdt@depth5@100ms"
 }

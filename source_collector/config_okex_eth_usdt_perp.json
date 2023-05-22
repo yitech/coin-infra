@@ -1,0 +1,16 @@
+{
+  "kafka_url": "localhost:9091",
+  "kafka_topic": "orderbook",
+  "partition": 0,
+
+  "symbol": "ETH/USDT",
+  "exchange": "okex",
+  "websocket_url": "wss://ws.okx.com:8443/ws/v5/public",
+
+  "args": [
+    {
+      "channel": "books5",
+      "instId": "ETH-USDT-SWAP"
+    }
+  ]
+}
