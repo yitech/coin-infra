@@ -6,12 +6,13 @@ from confluent_kafka import Producer
 import time
 
 class WebsocketKafkaBridge:
-    def __init__(self, karfka_url, kafka_topic, partition_id, symbol, websocket_url):
+    def __init__(self, karfka_url, kafka_topic, partition_id, exchange, symbol, websocket_url):
         self.kafka_url = karfka_url
         self.kafka_topic = kafka_topic
         self.partition_id = partition_id
         
         self.symbol = symbol
+        self.exchange = exchange
         self.websocket_url = websocket_url
         
         self.producer = Producer({'bootstrap.servers': self.kafka_url})
@@ -36,8 +37,10 @@ class WebsocketKafkaBridge:
     def on_message(self, ws, message):
         message = json.loads(message)
         message['symbol'] = self.symbol
+        message['exchange'] = self.exchange
         message['id'] = uuid.uuid4().hex
         message['timestamp'] = time.time()
+        
         self.producer.produce(self.kafka_topic, value=json.dumps(message), partition=self.partition_id)
         self.producer.flush()
         if  self.count % 100 == 0:
