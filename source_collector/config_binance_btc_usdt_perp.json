@@ -1,9 +1,8 @@
 {
   "kafka_url": "localhost:9091",
+  "kafka_topic": "orderbook",
+  "partition": 0,
+
   "symbol": "BTC/USDT",
-
-  "topic": "orderbook",
-  "endpoint": "http://localhost:40000/orderbook?symbol=BTC/USDT&limit=10",
-
-  "sleep": 1.0
+  "websocket_url": "wss://stream.binance.com:9443/ws/btcusdt@depth5@100ms"
 }

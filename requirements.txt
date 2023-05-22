@@ -2,6 +2,7 @@ requests
 pandas
 ccxt
 websockets
+websocket-client
 fastapi
 uvicorn[standard]
 python-binance
