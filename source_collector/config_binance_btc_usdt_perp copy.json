@@ -3,6 +3,7 @@
   "kafka_topic": "orderbook",
   "partition": 0,
 
-  "symbol": "BTC/USDT",
+  "symbol": "BTC-USDT-SWAP",
+  "exchange": "okex",
   "websocket_url": "wss://stream.binance.com:9443/ws/btcusdt@depth5@100ms"
 }

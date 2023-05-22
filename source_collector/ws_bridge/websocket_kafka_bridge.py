@@ -40,7 +40,6 @@ class WebsocketKafkaBridge:
         message['exchange'] = self.exchange
         message['id'] = uuid.uuid4().hex
         message['timestamp'] = time.time()
-        
         self.producer.produce(self.kafka_topic, value=json.dumps(message), partition=self.partition_id)
         self.producer.flush()
         if  self.count % 100 == 0:

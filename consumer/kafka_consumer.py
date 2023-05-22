@@ -25,6 +25,8 @@ class KafkaConsumer:
         self.client = InfluxDBClient(url=self.influx_url, token=self.influx_token)
         self.write_api = self.client.write_api(write_options=ASYNCHRONOUS)
 
+        self.count = 0
+
     @staticmethod
     def setup_logging():
         logging.basicConfig(
@@ -60,8 +62,10 @@ class KafkaConsumer:
 
     def process_message(self, msg):
         data = json.loads(msg.value().decode('utf-8'))
-        logging.info(f"Consumer {data['id']}...")
         self.push_to_influxdb(data)
+        if  self.count % 100 == 0:
+            logging.info(f"Produced {data['id']}")
+        self.count += 1
 
     def push_to_influxdb(self, data):
         point_main = Point("orderbook")
