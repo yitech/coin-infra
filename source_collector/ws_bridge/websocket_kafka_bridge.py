@@ -42,8 +42,8 @@ class WebsocketKafkaBridge:
             'exchange': self.exchange,
             'timestamp': time.time()
         }
-        data['asks'] = message['asks']
-        data['bids'] = message['bids']
+        data['asks'] = [[float(order[0]), float(order[1]) ] for order in message['asks']]
+        data['bids'] = [[float(order[0]), float(order[1]) ] for order in message['bids']]
         self.producer.produce(self.kafka_topic, value=json.dumps(data), partition=self.partition_id)
         self.producer.flush()
         if  self.count % 100 == 0:

@@ -1,9 +1,0 @@
-{
-  "kafka_url": "localhost:9091",
-  "kafka_topic": "orderbook",
-  "partition": 0,
-
-  "symbol": "ETH/USDT",
-  "exchange": "binance",
-  "websocket_url": "wss://stream.binance.com:9443/ws/ethusdt@depth5@100ms"
-}

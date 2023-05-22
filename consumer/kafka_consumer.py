@@ -64,7 +64,8 @@ class KafkaConsumer:
         data = json.loads(msg.value().decode('utf-8'))
         self.push_to_influxdb(data)
         if  self.count % 100 == 0:
-            logging.info(f"Produced {data['id']}")
+            for key, value in data.items():
+                logging.info(f"Insert data.{key}: {value}")
         self.count += 1
 
     def push_to_influxdb(self, data):
@@ -75,7 +76,6 @@ class KafkaConsumer:
         point_main = point_main.field("timestamp", data["timestamp"])
 
         self.write_api.write(bucket=self.influx_bucket, org=self.influx_org, record=point_main)
-
         for bid in data["bids"]:
             point_bid = Point("bids")
             point_bid = point_bid.tag("id", data["id"])
