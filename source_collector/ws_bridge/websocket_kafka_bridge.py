@@ -36,14 +36,19 @@ class WebsocketKafkaBridge:
 
     def on_message(self, ws, message):
         message = json.loads(message)
-        message['symbol'] = self.symbol
-        message['exchange'] = self.exchange
-        message['id'] = uuid.uuid4().hex
-        message['timestamp'] = time.time()
-        self.producer.produce(self.kafka_topic, value=json.dumps(message), partition=self.partition_id)
+        data = {
+            'id': uuid.uuid4().hex,
+            'symbol': self.symbol,
+            'exchange': self.exchange,
+            'timestamp': time.time()
+        }
+        data['asks'] = message['asks']
+        data['bids'] = message['bids']
+        self.producer.produce(self.kafka_topic, value=json.dumps(data), partition=self.partition_id)
         self.producer.flush()
         if  self.count % 100 == 0:
-            logging.info(f"Produced {message['id']}")
+            for key, value in data.items():
+                logging.info(f"Insert data.{key}: {value}")
         self.count += 1
         
 

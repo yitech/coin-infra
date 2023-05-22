@@ -49,7 +49,8 @@ class WebsocketOkexBridge:
         self.producer.produce(self.kafka_topic, value=json.dumps(data), partition=self.partition_id)
         self.producer.flush()
         if self.count % 100 == 0:
-            logging.info(f"Produced {data['id']}")
+            for key, value in data.items():
+                logging.info(f"Insert data.{key}: {value}")
         self.count += 1
 
     @staticmethod
