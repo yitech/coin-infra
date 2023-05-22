@@ -11,4 +11,6 @@ dnspython
 confluent-kafka
 influxdb-client
 flightsql-dbapi
+google-cloud-storage
+APScheduler
 
