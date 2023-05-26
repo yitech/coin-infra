@@ -53,8 +53,8 @@ def upload_orderbook():
     # Calculate timespan
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
-    start  = time.mktime(today.timetuple())
-    end = start + (24 * 60 * 60)
+    end  = time.mktime(today.timetuple())
+    start = end - (24 * 60 * 60)
 
     query_client = FlightSQLClient(
                     host = "us-east-1-1.aws.cloud2.influxdata.com",
