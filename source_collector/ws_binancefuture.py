@@ -36,6 +36,7 @@ class WebsocketBinancefutureBridge:
         return config
 
     def on_message(self, ws, message):
+        print(len(message))
         message = json.loads(message)
         data = {
             'id': uuid.uuid4().hex,
