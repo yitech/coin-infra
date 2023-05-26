@@ -10,10 +10,12 @@ class WebsocketOkexBridge:
         self.kafka_url = kafka_url
         self.kafka_topic = kafka_topic
         self.partition_id = partition_id
+
         self.symbol = symbol
         self.exchange = exchange
         self.websocket_url = websocket_url
         self.subscribe_args = subscribe_args
+        
         self.producer = Producer({'bootstrap.servers': self.kafka_url})
         self.count = 0
 

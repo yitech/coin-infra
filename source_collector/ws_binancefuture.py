@@ -4,6 +4,7 @@ import logging
 import websocket
 from confluent_kafka import Producer
 import time
+from datetime import datetime, timezone
 
 class WebsocketBinancefutureBridge:
     def __init__(self, karfka_url, kafka_topic, partition_id, exchange, symbol, websocket_url):
@@ -40,7 +41,7 @@ class WebsocketBinancefutureBridge:
             'id': uuid.uuid4().hex,
             'symbol': self.symbol,
             'exchange': self.exchange,
-            'timestamp': time.time()
+            'timestamp': datetime.fromtimestamp(time.time(), timezone.utc).isoformat()
         }
         
         data['asks'] = [[float(order[0]), float(order[1]) ] for order in message['a']]

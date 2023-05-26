@@ -1,2 +1,2 @@
-from .ws_binancefuture_100ms import WebsocketBinancefutureBridge
-from .ws_okex_100ms import WebsocketOkexBridge
+from .ws_binancefuture import WebsocketBinancefutureBridge
+from .ws_okex import WebsocketOkexBridge
