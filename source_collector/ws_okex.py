@@ -4,6 +4,7 @@ import logging
 import websocket
 import time
 from confluent_kafka import Producer
+from datetime import datetime, timezone
 
 class WebsocketOkexBridge:
     def __init__(self, kafka_url, kafka_topic, partition_id, exchange, symbol, websocket_url, subscribe_args):
@@ -44,7 +45,7 @@ class WebsocketOkexBridge:
             'id': uuid.uuid4().hex,
             'symbol': self.symbol,
             'exchange': self.exchange,
-            'timestamp': time.time()
+            'timestamp': datetime.fromtimestamp(time.time(), timezone.utc).isoformat()
             }
         data['asks'] = [[float(order[0]), float(order[1])] for order in message['asks']]
         data['bids'] = [[float(order[0]), float(order[1])] for order in message['bids']]

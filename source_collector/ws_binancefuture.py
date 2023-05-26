@@ -36,7 +36,6 @@ class WebsocketBinancefutureBridge:
         return config
 
     def on_message(self, ws, message):
-        print(len(message))
         message = json.loads(message)
         data = {
             'id': uuid.uuid4().hex,
@@ -47,13 +46,12 @@ class WebsocketBinancefutureBridge:
         
         data['asks'] = [[float(order[0]), float(order[1]) ] for order in message['a']]
         data['bids'] = [[float(order[0]), float(order[1]) ] for order in message['b']]
-        print(data)
         
         self.producer.produce(self.kafka_topic, value=json.dumps(data), partition=self.partition_id)
         self.producer.flush()
-        # if  self.count % 100 == 0:
-        #     for key, value in data.items():
-        #         logging.info(f"Insert data.{key}: {value}")
+        if  self.count % 100 == 0:
+            for key, value in data.items():
+                logging.info(f"Insert data.{key}: {value}")
         self.count += 1
         
 

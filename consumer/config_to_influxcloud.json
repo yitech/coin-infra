@@ -1,5 +1,5 @@
 {
-    "kafka_url": "localhost:9091",
+    "kafka_url": "localhost:9092",
     "group_id": "coin-project",
     "kafka_topic": "orderbook",
 
