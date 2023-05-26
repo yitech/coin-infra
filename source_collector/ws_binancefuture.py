@@ -5,7 +5,7 @@ import websocket
 from confluent_kafka import Producer
 import time
 
-class WebsocketKafkaBridge:
+class WebsocketBinancefutureBridge:
     def __init__(self, karfka_url, kafka_topic, partition_id, exchange, symbol, websocket_url):
         self.kafka_url = karfka_url
         self.kafka_topic = kafka_topic
@@ -42,13 +42,16 @@ class WebsocketKafkaBridge:
             'exchange': self.exchange,
             'timestamp': time.time()
         }
-        data['asks'] = [[float(order[0]), float(order[1]) ] for order in message['asks']]
-        data['bids'] = [[float(order[0]), float(order[1]) ] for order in message['bids']]
+        
+        data['asks'] = [[float(order[0]), float(order[1]) ] for order in message['a']]
+        data['bids'] = [[float(order[0]), float(order[1]) ] for order in message['b']]
+        print(data)
+        
         self.producer.produce(self.kafka_topic, value=json.dumps(data), partition=self.partition_id)
         self.producer.flush()
-        if  self.count % 100 == 0:
-            for key, value in data.items():
-                logging.info(f"Insert data.{key}: {value}")
+        # if  self.count % 100 == 0:
+        #     for key, value in data.items():
+        #         logging.info(f"Insert data.{key}: {value}")
         self.count += 1
         
 

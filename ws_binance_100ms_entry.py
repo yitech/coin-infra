@@ -1,15 +1,15 @@
 import argparse
-from source_collector.ws_bridge import WebsocketKafkaBridge
+from source_collector import WebsocketBinancefutureBridge
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', default='config.json', help='Path to configuration file')
     args = parser.parse_args()
 
-    WebsocketKafkaBridge.setup_logging()
-    config = WebsocketKafkaBridge.read_config_file(args.config)
+    WebsocketBinancefutureBridge.setup_logging()
+    config = WebsocketBinancefutureBridge.read_config_file(args.config)
     
-    bridge = WebsocketKafkaBridge(
+    bridge = WebsocketBinancefutureBridge(
         config['kafka_url'], 
         config['kafka_topic'], 
         config['partition'],

@@ -25,4 +25,5 @@ python_script="ws_${exchange}_100ms_entry.py"
 python_exec="$(pwd)/venv/bin/python"
 
 # Execute the command
-nohup $python_exec $python_script --config $config_file >> $log_file 2>&1 &
+# nohup $python_exec $python_script --config $config_file >> $log_file 2>&1 &
+$python_exec $python_script --config $config_file
