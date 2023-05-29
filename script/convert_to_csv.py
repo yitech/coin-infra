@@ -35,13 +35,12 @@ def convert_to_orderbook(soruce_directory, date):
                             asks_writer.writerow([data['id'], price, size])
                         for price, size in data['bids']:
                             bids_writer.writerow([data['id'], price, size])
-                        orderbook_writer.writerow([data['id'], data['timestamp'], data['symbol'], data['exchange']])
                     line = log.readline()
     orderbook.close()
     asks.close()
     bids.close()
 
 if __name__ == "__main__":
-    date = datetime.fromisoformat("2023-05-27T13:27:54.088343+00:00".replace('Z', '+00:00')).date()
+    date = datetime.fromisoformat("2023-05-28T13:27:54.088343+00:00".replace('Z', '+00:00')).date()
     # date = datetime.today() - timedelta(days=1)
     convert_to_orderbook('coin_data_2', date)
