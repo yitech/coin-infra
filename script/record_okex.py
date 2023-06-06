@@ -48,7 +48,7 @@ async def main(args):
                                  "timestamp": dt_object.isoformat(),
                                  "exchange": "okex",
                                  'ask': [[float(item) for item in sublist[:2]] for sublist in json_data['asks']], 
-                                 'bid': [[float(item) for item in sublist] for sublist in json_data['asks']]}
+                                 'bid': [[float(item) for item in sublist[:2]] for sublist in json_data['asks']]}
                 except json.JSONDecodeError:
                     logging.error('JSONDecodeError for message: %s', message)
                     continue
