@@ -28,34 +28,40 @@ async def dump_to_file(outdir, symbol, batch_size, queue):
                 f.write('\n')
             batch.clear()
 
+
 async def main(args):
     queue = asyncio.Queue()
     WS_ADDRESS = args["websocket_url"]
-    try:
-        async with websockets.connect(WS_ADDRESS) as websocket:
-            dump_task = asyncio.create_task(dump_to_file(args["outdir"], args["symbol"], args["batch_size"], queue))
-            # Send subscription message
-            data = json_args["request"]
-            await websocket.send(json.dumps(data))
-            response = await websocket.recv()
-            logging.info(f"Received response: {response}")
-            async for message in websocket:
-                try:
-                    json_data = json.loads(message)['data'][0]
-                    dt_object = datetime.fromtimestamp(int(json_data["ts"]) / 1000, timezone.utc)
-                    json_data = {"id": uuid.uuid4().hex, 
-                                 "symbol": args["symbol"], 
-                                 "timestamp": dt_object.isoformat(),
-                                 "exchange": "okex",
-                                 'ask': [[float(item) for item in sublist[:2]] for sublist in json_data['asks']], 
-                                 'bid': [[float(item) for item in sublist[:2]] for sublist in json_data['asks']]}
-                except json.JSONDecodeError:
-                    logging.error('JSONDecodeError for message: %s', message)
-                    continue
-                await queue.put(json_data)
-    except KeyboardInterrupt:
-        # Final dump when KeyboardInterrupt is raised
-        await dump_task
+
+    while True:
+        try:
+            async with websockets.connect(WS_ADDRESS) as websocket:
+                dump_task = asyncio.create_task(dump_to_file(args["outdir"], args["symbol"], args["batch_size"], queue))
+                # Send subscription message
+                data = json_args["request"]
+                await websocket.send(json.dumps(data))
+                response = await websocket.recv()
+                logging.info(f"Received response: {response}")
+                async for message in websocket:
+                    try:
+                        json_data = json.loads(message)['data'][0]
+                        dt_object = datetime.fromtimestamp(int(json_data["ts"]) / 1000, timezone.utc)
+                        json_data = {"id": uuid.uuid4().hex, 
+                                     "symbol": args["symbol"], 
+                                     "timestamp": dt_object.isoformat(),
+                                     "exchange": "okex",
+                                     'ask': [[float(item) for item in sublist[:2]] for sublist in json_data['asks']], 
+                                     'bid': [[float(item) for item in sublist[:2]] for sublist in json_data['bids']]}
+                    except json.JSONDecodeError:
+                        logging.error('JSONDecodeError for message: %s', message)
+                        continue
+                    await queue.put(json_data)
+                break  # if all goes well, break out of the reconnection loop
+        except Exception as e:
+            logging.error('WebSocket connection error: %s', str(e))
+            logging.info('Reconnecting in 60 seconds...')
+            await asyncio.sleep(60)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Websocket reader and json dumper.')

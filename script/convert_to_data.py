@@ -58,7 +58,7 @@ def clear_raw(date):
     # Remove each file
     for file in files:
         try:
-            # os.remove(file)
+            os.remove(file)
             logging.info(f"File {file} has been removed successfully")
         except:
             logging.error(f"Error while deleting file : {file}")
@@ -92,7 +92,7 @@ def clear_csv():
     # Remove each file
     for file in files:
         try:
-            # os.remove(file)
+            os.remove(file)
             logging.info(f"File {file} has been removed successfully")
         except:
             logging.error(f"Error while deleting file : {file}")
