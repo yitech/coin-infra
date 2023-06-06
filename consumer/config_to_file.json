@@ -1,8 +1,0 @@
-{
-    "kafka_url": "localhost:9092",
-    "group_id": "coin-project",
-    "kafka_topic": "orderbook",
-
-    "file_storage": "./coin_data",
-    "batch_size": 1000
-}
