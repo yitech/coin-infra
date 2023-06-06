@@ -20,7 +20,7 @@ async def dump_to_file(outdir, symbol, batch_size, queue):
             data = await queue.get()
             batch.append(data)
         formatted = datetime.now().strftime("%Y%m%d%H")
-        filename = f"{symbol.replace('/', '_')}_{formatted}.txt"
+        filename = f"BINANCE_{symbol.replace('/', '_')}_{formatted}.txt"
         outfile = os.path.join(outdir, filename)
         with open(outfile, 'a') as f:
             for data in batch:
@@ -40,7 +40,8 @@ async def main(args):
                     dt_object = datetime.fromtimestamp(json_data["T"] / 1000, timezone.utc)
                     json_data = {"id": uuid.uuid4().hex, 
                                  "symbol": args["symbol"], 
-                                 "timestamp": dt_object.isoformat(), 
+                                 "timestamp": dt_object.isoformat(),
+                                 "exchange": "binance",
                                  'ask': [[float(item) for item in sublist] for sublist in json_data['a']], 
                                  'bid': [[float(item) for item in sublist] for sublist in json_data['b']]}
                 except json.JSONDecodeError:
