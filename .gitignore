@@ -11,6 +11,8 @@ credentials
 
 # configurations
 configuration
+configurations
+artifact
 
 # log
 *.txt
