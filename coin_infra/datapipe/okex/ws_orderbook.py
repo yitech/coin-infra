@@ -30,6 +30,9 @@ class OkexOrderbook:
         except Exception as e:
             self.logger.info(f"{e}: {traceback.format_exc()}")
             exit()
+    
+    async def postprocess(self, json_data):
+        self.logger.info(json_data)
 
     async def run(self, subscription):
         async with websockets.connect(self.wss_url) as websocket:
@@ -38,5 +41,5 @@ class OkexOrderbook:
             self.logger.info(response)
             async for message in websocket:
                 json_data = await self.process_message(message)
-                self.logger.info(json_data)
+                await self.postprocess(json_data)
 
