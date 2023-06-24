@@ -8,9 +8,10 @@ setup(
     author_email='coastq22889@icloud.com',
     packages=find_packages(),
     install_requires=[
-        # list packages your project relies on
         'numpy',
         'pandas',
-        # etc.
+        'requests',
+        'websockets',
+        'websocket-client'
     ],
 )

@@ -1,0 +1,4 @@
+{
+    "wss": "wss://fstream.binance.com/ws/btcusdt@depth5@100ms",
+    "symbol": "BTCUSDT"
+}
