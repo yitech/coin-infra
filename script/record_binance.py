@@ -12,7 +12,7 @@ class BNFOrderbookToFile(BinanceFuturesOrderbook):
         super().__init__(wss_url, symbol)
         self.filepath = filepath
         self.batch = batch
-        self.queue = Queue(maxsize=self.batch + 10)
+        self.queue = Queue(maxsize=self.batch + 100)
     
     async def postprocess(self, json_data):
         await super().postprocess(json_data)
@@ -25,18 +25,11 @@ class BNFOrderbookToFile(BinanceFuturesOrderbook):
                 datetime_object = datetime.fromisoformat(data['timestamp'])
                 time_interval = datetime_object.strftime("%Y%m%d%H")
                 cls[time_interval].append(data)
-            for interval, data in cls.items:
+
+            for interval, data in cls.items():
+                self.logger.info(f'time interval: {interval}, size: {len(data)}')
                 with open(f'{self.filepath}_{interval}.log', 'a') as f:
-                    for row in data:
-                        f.write(json.dumps(row))
-        
-
-            
-
-            
-
-
-    
+                    f.writelines(map(lambda x: x + "\n", map(json.dumps, data)))
 
 
 if __name__ == "__main__":
@@ -47,4 +40,5 @@ if __name__ == "__main__":
     with open(args.json_file, 'r') as f:
         json_args = json.load(f)
 
-    asyncio.run(main(json_args))
+    bnf = BNFOrderbookToFile(json_args['wss'], json_args['symbol'], json_args['filepath'], 2000)
+    asyncio.run(bnf.run())
