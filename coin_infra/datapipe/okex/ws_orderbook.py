@@ -17,10 +17,11 @@ class OkexOrderbook:
             message = json.loads(message)
             arg = message['arg']
             data = message['data'][0]
+            dt_object = datetime.fromtimestamp(int(data['ts']) / 1000, timezone.utc)
             unique_pattern = f"okx{data['seqId']}{arg['instId']}"
             json_data = {"id": hashlib.sha256(unique_pattern.encode()).hexdigest(),
                          "symbol": self.symbol, 
-                         "timestamp": int(data['ts']),
+                         "timestamp": dt_object.isoformat(),
                          "exchange": "okex",
                          'ask': [[float(item) for item in sublist[:2]] for sublist in data['asks']], 
                          'bid': [[float(item) for item in sublist[:2]] for sublist in data['bids']]}

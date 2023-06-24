@@ -1,59 +1,46 @@
 import os
 import argparse
 import asyncio
-import logging
-import websockets
 import json
-from datetime import datetime, timezone
-import uuid
+from datetime import datetime
+from queue import Queue
+from collections import defaultdict
+from coin_infra.datapipe import BinanceFuturesOrderbook
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(filename)s:%(lineno)d] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
+class BNFOrderbookToFile(BinanceFuturesOrderbook):
+    def __init__(self, wss_url, symbol, filepath, batch):
+        super().__init__(wss_url, symbol)
+        self.filepath = filepath
+        self.batch = batch
+        self.queue = Queue(maxsize=self.batch + 10)
+    
+    async def postprocess(self, json_data):
+        await super().postprocess(json_data)
+        self.queue.put(json_data)
+        
+        if self.queue.qsize() >= self.batch:
+            cls = defaultdict(list)
+            for _ in range(self.batch):
+                data = self.queue.get()
+                datetime_object = datetime.fromisoformat(data['timestamp'])
+                time_interval = datetime_object.strftime("%Y%m%d%H")
+                cls[time_interval].append(data)
+            for interval, data in cls.items:
+                with open(f'{self.filepath}_{interval}.log', 'a') as f:
+                    for row in data:
+                        f.write(json.dumps(row))
+        
 
-async def dump_to_file(outdir, symbol, batch_size, queue):
-    batch = []
-    while True:
-        while len(batch) < batch_size:
-            data = await queue.get()
-            batch.append(data)
-        formatted = datetime.now().strftime("%Y%m%d%H")
-        filename = f"BINANCE_{symbol.replace('/', '_')}_{formatted}.txt"
-        outfile = os.path.join(outdir, filename)
-        with open(outfile, 'a') as f:
-            for data in batch:
-                json.dump(data, f)
-                f.write('\n')
-            batch.clear()
+            
 
-async def main(args):
-    queue = asyncio.Queue()
-    WS_ADDRESS = args["websocket_url"]
-    try:
-        async with websockets.connect(WS_ADDRESS) as websocket:
-            dump_task = asyncio.create_task(dump_to_file(args["outdir"], args["symbol"], args["batch_size"], queue))
-            async for message in websocket:
-                try:
-                    json_data = json.loads(message)
-                    dt_object = datetime.fromtimestamp(json_data["T"] / 1000, timezone.utc)
-                    json_data = {"id": uuid.uuid4().hex, 
-                                 "symbol": args["symbol"], 
-                                 "timestamp": dt_object.isoformat(),
-                                 "exchange": "binance",
-                                 'ask': [[float(item) for item in sublist] for sublist in json_data['a']], 
-                                 'bid': [[float(item) for item in sublist] for sublist in json_data['b']]}
-                except json.JSONDecodeError:
-                    logging.error('JSONDecodeError for message: %s', message)
-                    continue
-                await queue.put(json_data)
-    except KeyboardInterrupt:
-        # Final dump when KeyboardInterrupt is raised
-        await dump_task
+            
+
+
+    
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Websocket reader and json dumper.')
+    parser = argparse.ArgumentParser(description='Binancefutures orderbook reader')
     parser.add_argument('json_file', type=str, help='Json file containing arguments')
     args = parser.parse_args()
 
