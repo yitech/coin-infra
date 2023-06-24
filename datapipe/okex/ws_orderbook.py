@@ -41,12 +41,3 @@ class OkexOrderbook:
                 json_data = await self.process_message(message)
                 self.logger.info(json_data)
 
-if __name__ == "__main__":
-    okx = OkexOrderbook('wss://ws.okx.com:8443/ws/v5/public', 'LTC')
-    asyncio.run(okx.run({
-            "op": "subscribe",
-            "args": [{
-                "channel": "books5",
-                "instId": "LTC-USDT-SWAP"
-            }]
-        }))
