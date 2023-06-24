@@ -5,7 +5,7 @@
         "op": "subscribe",
         "args": [{
             "channel": "books5",
-            "instId": "LTC-USDT-SWAP"
+            "instId": "BTC-USDT-SWAP"
         }]
     }
 }

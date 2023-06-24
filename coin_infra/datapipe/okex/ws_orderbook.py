@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timezone
 import hashlib
 import traceback
-from core import Logger
+from coin_infra.core import Logger
 
 class OkexOrderbook:
     def __init__(self, wss_url, symbol):

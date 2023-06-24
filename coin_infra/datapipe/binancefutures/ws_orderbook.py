@@ -3,7 +3,7 @@ import json
 from datetime import datetime, timezone
 import hashlib
 import traceback
-from core import Logger
+from coin_infra.core import Logger
 
 class BinanceFuturesOrderbook:
     def __init__(self, wss_url, symbol):
@@ -27,10 +27,14 @@ class BinanceFuturesOrderbook:
         except Exception as e:
             self.logger.info(f"{e}: {traceback.format_exc()}")
             exit()
-        
+    
+    async def postprocess(self, json_data):
+        self.logger.info(json_data)
+
 
     async def run(self):
         async with websockets.connect(self.wss_url) as websocket:
             async for message in websocket:
                 json_data = await self.process_message(message)
-                self.logger.info(json_data)
+                await self.postprocess(json_data)
+                

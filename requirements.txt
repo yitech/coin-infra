@@ -13,3 +13,4 @@ google-cloud-storage
 APScheduler
 psutil
 watchdog
+pytest
