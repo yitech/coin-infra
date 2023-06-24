@@ -15,7 +15,7 @@ class OkexOrderbookToFile(OkexOrderbook):
         self.queue = Queue(maxsize=self.batch + 100)
     
     async def postprocess(self, json_data):
-        await super().postprocess(json_data)
+        # await super().postprocess(json_data)
         self.queue.put(json_data)
         
         if self.queue.qsize() >= self.batch:

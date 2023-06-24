@@ -1,0 +1,6 @@
+{
+    "wss": "wss://fstream.binance.com/ws/ltcusdt@depth5@100ms",
+    "symbol": "LTCUSDT",
+
+    "filepath": "/home/yite/coin-infra/artifact/log/binance_ltcusdt"
+}
