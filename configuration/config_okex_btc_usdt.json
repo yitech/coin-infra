@@ -1,0 +1,11 @@
+{
+    "wss": "wss://ws.okx.com:8443/ws/v5/public",
+    "symbol": "BTCUSDT",
+    "ops": {
+        "op": "subscribe",
+        "args": [{
+            "channel": "books5",
+            "instId": "LTC-USDT-SWAP"
+        }]
+    }
+}

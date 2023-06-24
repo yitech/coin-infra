@@ -2,6 +2,7 @@ import websockets
 import json
 from datetime import datetime, timezone
 import hashlib
+import traceback
 from core import Logger
 
 class BinanceFuturesOrderbook:
@@ -14,19 +15,19 @@ class BinanceFuturesOrderbook:
     async def process_message(self, message):
         try:
             json_data = json.loads(message)
-        except json.JSONDecodeError:
-            self.Logger.error('JSONDecodeError for message: %s', message)
-            return None
-
-        dt_object = datetime.fromtimestamp(json_data["T"] / 1000, timezone.utc)
-        unique_pattern = f"binancefuture{json_data['E']}{json_data['s']}"
-        json_data = {"id": hashlib.sha256(unique_pattern.encode()).hexdigest(), 
-                     "symbol": self.symbol, 
-                     "timestamp": dt_object.isoformat(),
-                     "exchange": "binance",
-                     'ask': [[float(item) for item in sublist] for sublist in json_data['a']], 
-                     'bid': [[float(item) for item in sublist] for sublist in json_data['b']]}
-        return json_data
+            dt_object = datetime.fromtimestamp(json_data["T"] / 1000, timezone.utc)
+            unique_pattern = f"binancefuture{json_data['E']}{json_data['s']}"
+            json_data = {"id": hashlib.sha256(unique_pattern.encode()).hexdigest(), 
+                         "symbol": self.symbol, 
+                         "timestamp": dt_object.isoformat(),
+                         "exchange": "binance",
+                         'ask': [[float(item) for item in sublist] for sublist in json_data['a']], 
+                         'bid': [[float(item) for item in sublist] for sublist in json_data['b']]}
+            return json_data
+        except Exception as e:
+            self.logger.info(f"{e}: {traceback.format_exc()}")
+            exit()
+        
 
     async def run(self):
         self.wss_url

@@ -1,10 +1,8 @@
-import asyncio
 import websockets
 import json
 from datetime import datetime, timezone
 import hashlib
 import traceback
-import uuid
 from core import Logger
 
 class OkexOrderbook:
