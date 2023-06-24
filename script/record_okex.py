@@ -21,7 +21,7 @@ class OkexOrderbookToFile(OkexOrderbook):
         if self.queue.qsize() >= self.batch:
             cls = defaultdict(list)
             for _ in range(self.batch):
-                data = self.queue.get()
+                data = self.queue.get()               
                 datetime_object = datetime.fromisoformat(data['timestamp'])
                 time_interval = datetime_object.strftime("%Y%m%d%H")
                 cls[time_interval].append(data)
@@ -40,5 +40,5 @@ if __name__ == "__main__":
     with open(args.json_file, 'r') as f:
         json_args = json.load(f)
 
-    okx = OkexOrderbookToFile(json_args['wss'], json_args['symbol'], json_args['filepath'], 2000)
+    okx = OkexOrderbookToFile(json_args['wss'], json_args['symbol'], json_args['filepath'], 50)
     asyncio.run(okx.run(json_args['ops']))

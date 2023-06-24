@@ -25,7 +25,6 @@ class OkexOrderbook:
                          "exchange": "okex",
                          'ask': [[float(item) for item in sublist[:2]] for sublist in data['asks']], 
                          'bid': [[float(item) for item in sublist[:2]] for sublist in data['bids']]}
-            json_data = json.dumps(json_data)
             return json_data
         except Exception as e:
             self.logger.info(f"{e}: {traceback.format_exc()}")
