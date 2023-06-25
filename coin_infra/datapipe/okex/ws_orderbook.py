@@ -54,4 +54,5 @@ class OkexOrderbook:
             await self.websocket.send(json.dumps(unsubsciption))
             response = await self.websocket.recv()
             self.logger.info(response)
+            await self.websocket.close()
 

@@ -46,4 +46,6 @@ class BinanceFuturesOrderbook:
     async def stop(self):
         self._is_running = False
         self.logger.info(f'stop listening {self.wss_url}')
+        if self.websocket is not None:
+            await self.websocket.close()
                 
