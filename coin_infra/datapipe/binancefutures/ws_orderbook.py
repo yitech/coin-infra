@@ -9,6 +9,8 @@ class BinanceFuturesOrderbook:
     def __init__(self, wss_url, symbol):
         self.wss_url = wss_url
         self.symbol = symbol
+        self.websocket = None
+        self._is_running = False
         self.logger = Logger(__name__ + wss_url)
     
   
@@ -33,8 +35,15 @@ class BinanceFuturesOrderbook:
 
 
     async def run(self):
-        async with websockets.connect(self.wss_url) as websocket:
-            async for message in websocket:
-                json_data = await self.process_message(message)
-                await self.postprocess(json_data)
+        self.websocket = await websockets.connect(self.wss_url)
+        async for message in self.websocket:
+            json_data = await self.process_message(message)
+            await self.postprocess(json_data)
+            if not self._is_running:
+                break
+        await self.websocket.close()
+    
+    async def stop(self):
+        self._is_running = False
+        self.logger.info(f'stop listening {self.wss_url}')
                 

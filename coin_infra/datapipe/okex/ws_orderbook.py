@@ -9,6 +9,8 @@ class OkexOrderbook:
     def __init__(self, wss_url, symbol):
         self.wss_url = wss_url
         self.symbol = symbol
+        self.websocket = None
+        self._is_running = False
         self.logger = Logger(__name__ + wss_url)
     
   
@@ -34,11 +36,22 @@ class OkexOrderbook:
         self.logger.info(json_data)
 
     async def run(self, subscription):
-        async with websockets.connect(self.wss_url) as websocket:
-            await websocket.send(json.dumps(subscription))
-            response = await websocket.recv()
+        self.websocket = await websockets.connect(self.wss_url)
+        await self.websocket.send(json.dumps(subscription))
+        response = await self.websocket.recv()
+        self.logger.info(response)
+        async for message in self.websocket:
+            json_data = await self.process_message(message)
+            await self.postprocess(json_data)
+            if not self._is_running:
+                break
+        await self.websocket.close()
+
+    async def stop(self, unsubsciption):
+        self._is_running = False
+        self.logger.info(f'stop listening {self.wss_url}')
+        if self.websocket is not None:
+            await self.websocket.send(json.dumps(unsubsciption))
+            response = await self.websocket.recv()
             self.logger.info(response)
-            async for message in websocket:
-                json_data = await self.process_message(message)
-                await self.postprocess(json_data)
 
