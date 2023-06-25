@@ -35,6 +35,7 @@ class BinanceFuturesOrderbook:
 
 
     async def run(self):
+        self._is_running = True
         self.websocket = await websockets.connect(self.wss_url)
         async for message in self.websocket:
             json_data = await self.process_message(message)
