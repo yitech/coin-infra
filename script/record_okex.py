@@ -1,4 +1,5 @@
 import os
+import time
 import argparse
 import asyncio
 import json
@@ -42,3 +43,7 @@ if __name__ == "__main__":
 
     okx = OkexOrderbookToFile(json_args['wss'], json_args['symbol'], json_args['filepath'], 2000)
     asyncio.run(okx.run(json_args['ops']))
+    time.sleep(10)
+    
+    
+    
