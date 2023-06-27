@@ -1,7 +1,17 @@
 {
-    "wss": "wss://fstream.binance.com/ws/btcusdt@depth5@100ms",
-    "symbol": "BTCUSDT",
+    "pub":{
+        "wss": "wss://fstream.binance.com/ws/btcusdt@depth5@100ms",
+        "symbol": "BTCUSDT"
+    },
 
-    "redis_url": "redis://localhost:6379",
-    "channel":"binance_btc"
+    "broker":{
+        "redis_url": "redis://localhost:6379",
+        "channel":"binance_btc"
+    },
+
+    "mongo":{
+        "srv": "mongodb://localhost",
+        "port": 27017,
+        "collection": "coin-recording"
+    }
 }
