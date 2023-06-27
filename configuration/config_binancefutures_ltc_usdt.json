@@ -2,5 +2,6 @@
     "wss": "wss://fstream.binance.com/ws/ltcusdt@depth5@100ms",
     "symbol": "LTCUSDT",
 
-    "filepath": "/home/yite/coin-infra/artifact/data/binance_ltcusdt"
+    "redis_url": "redis://localhost:6379",
+    "channel":"binance_ltc"
 }

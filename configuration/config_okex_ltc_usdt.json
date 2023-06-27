@@ -9,5 +9,6 @@
         }]
     },
 
-    "filepath": "/home/yite/coin-infra/artifact/data/okex_ltcusdt"
+    "redis_url": "redis://localhost:6379",
+    "channel":"okex_ltc"
 }
