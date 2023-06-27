@@ -27,6 +27,7 @@ class BNFOrderbookToRedis(BinanceFuturesOrderbook):
             await self.redis.publish(self.channel, json_string)
         except Exception as e:
             self.logger.error(f' {e} : {traceback.format_exc()}')
+        finally:
             await self.stop()
 
 
@@ -44,6 +45,9 @@ if __name__ == "__main__":
 
     with open(args.json_file, 'r') as f:
         json_args = json.load(f)
+    
+    sub = json_args["sub"]
+    broker = json_args["broker"]
 
-    bnf = BNFOrderbookToRedis(json_args['wss'], json_args['symbol'], json_args['redis_url'], json_args['channel'])
+    bnf = BNFOrderbookToRedis(sub['wss'], sub['symbol'], json_args['redis_url'], json_args['channel'])
     asyncio.run(bnf.run())

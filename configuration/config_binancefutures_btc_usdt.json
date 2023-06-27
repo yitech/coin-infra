@@ -5,13 +5,12 @@
     },
 
     "broker":{
-        "redis_url": "redis://localhost:6379",
+        "url": "redis://localhost:6379",
         "channel":"binance_btc"
     },
 
     "mongo":{
-        "srv": "mongodb://localhost",
-        "port": 27017,
-        "collection": "coin-recording"
+        "url": "mongodb://localhost:27017",
+        "collection": "coin-record"
     }
 }
