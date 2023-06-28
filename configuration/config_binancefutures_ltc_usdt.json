@@ -1,7 +1,16 @@
 {
-    "wss": "wss://fstream.binance.com/ws/ltcusdt@depth5@100ms",
-    "symbol": "LTCUSDT",
+    "pub":{
+        "wss": "wss://fstream.binance.com/ws/btcusdt@depth5@100ms",
+        "symbol": "BTCUSDT"
+    },
 
-    "redis_url": "redis://localhost:6379",
-    "channel":"binance_ltc"
+    "broker":{
+        "url": "redis://localhost:6379",
+        "channel":"binance_ltc"
+    },
+
+    "mongo":{
+        "url": "mongodb://localhost:27017",
+        "collection": "coin-record"
+    }
 }

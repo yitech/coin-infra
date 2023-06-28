@@ -20,7 +20,6 @@ class Consumer:
         port = parsed.port
         self.mongo_client = MongoClient(protocol_host, port)
 
-        self.queue = Queue()
         self.logger = Logger(__name__)
 
     def consume(self):

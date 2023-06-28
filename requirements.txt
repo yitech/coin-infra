@@ -16,3 +16,4 @@ watchdog
 pytest
 redis
 aioredis
+motor

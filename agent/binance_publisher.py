@@ -17,18 +17,13 @@ class BNFOrderbookToRedis(BinanceFuturesOrderbook):
         self.redis = None
 
     async def init_redis(self):
+        self.logger.info(f'Connect to {self.redis_url}')
         self.redis = await aioredis.from_url(self.redis_url)
     
     async def postprocess(self, json_data):
         # await super().postprocess(json_data)
         json_string = json.dumps(json_data)
-        try:
-            # Use await to push the data into the Redis database.
-            await self.redis.publish(self.channel, json_string)
-        except Exception as e:
-            self.logger.error(f' {e} : {traceback.format_exc()}')
-        finally:
-            await self.stop()
+        await self.redis.publish(self.channel, json_string)
 
 
     async def run(self):
@@ -46,8 +41,8 @@ if __name__ == "__main__":
     with open(args.json_file, 'r') as f:
         json_args = json.load(f)
     
-    sub = json_args["sub"]
+    pub = json_args["pub"]
     broker = json_args["broker"]
 
-    bnf = BNFOrderbookToRedis(sub['wss'], sub['symbol'], json_args['redis_url'], json_args['channel'])
+    bnf = BNFOrderbookToRedis(pub['wss'], pub['symbol'], broker['url'], broker['channel'])
     asyncio.run(bnf.run())
