@@ -2,25 +2,17 @@
 
 set -xe
 
-# Validate command-line arguments
-if [ $# -ne 2 ]; then
-  echo "Usage: ./console.sh <python_script> <config_file>"
-  exit 1
-fi
-
-# Get arguments
-python_script=$1
-config_file=$2
-
-# Get the base name of the config file without extension
-config_file_base=$(basename $config_file .json)
+workspace="/home/yite/coin-infra"
+export PYTHONPATH=$workspace
 
 # Construct filenames
 timestamp=$(date +"%Y%m%d%H%M%S")
-log_file="/home/yite/coin-infra/artifact/log/${config_file_base}_${timestamp}.log"
+log_file="${workspace}/artifact/log/${timestamp}.log"
 
 # Set the Python executable path
 python_exec="/home/yite/coin-infra/venv/bin/python"
 
-# Execute the command
-nohup $python_exec $python_script $config_file >> $log_file 2>&1 &
+# Execute agent
+nohup $python_exec "${workspace}/agent/binance_publisher.py" "${workspace}/configuration/config_binancefutures_btc_usdt.json" >> $log_file 2>&1 &
+# Execute subscriber
+nohup $python_exec "${workspace}/agent/subscriptor.py" "${workspace}/configuration/config_binancefutures_btc_usdt.json" >> $log_file 2>&1 &

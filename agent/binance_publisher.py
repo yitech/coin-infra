@@ -1,48 +1,72 @@
-import os
 import argparse
-import asyncio
 import json
 import aioredis
+import asyncio
 import traceback
-from datetime import datetime
 from queue import Queue
+from urllib.parse import urlparse
+from motor.motor_asyncio import AsyncIOMotorClient
+from coin_infra.core import Logger
+from datetime import datetime
 from collections import defaultdict
-from coin_infra.datapipe import BinanceFuturesOrderbook
 
-class BNFOrderbookToRedis(BinanceFuturesOrderbook):
-    def __init__(self, wss_url, symbol, redis_url, channel):
-        super().__init__(wss_url, symbol)
+class Consumer:
+    def __init__(self, redis_url, channel, mongo_url):
         self.redis_url = redis_url
         self.channel = channel
-        self.redis = None
+        self.mongo_url = mongo_url
+        self.queue = Queue()
+        self.logger = Logger(__name__)
 
-    async def init_redis(self):
-        self.logger.info(f'Connect to {self.redis_url}')
-        self.redis = await aioredis.from_url(self.redis_url)
-    
-    async def postprocess(self, json_data):
-        # await super().postprocess(json_data)
-        json_string = json.dumps(json_data)
-        await self.redis.publish(self.channel, json_string)
+    async def init_connections(self):
+        self.redis_conn = await aioredis.from_url(self.redis_url)
+        self.mongo_client = AsyncIOMotorClient(self.mongo_url)
 
+    async def commit_to_mongo(self, data):
+        # parse date from timestamp
+        await self.queue.put(data)  # Put data in queue
+        
+        if self.queue.qsize() > 1000:
+            self.logger.info(f'{self.queue.qsize()=}')
+            data_batch = defaultdict(list)
+            for _ in range(1000):
+                data = self.queue.get()
+                dt = datetime.strptime(data['timestamp'], '%Y-%m-%dT%H:%M:%S.%f%z')
+                date = dt.strftime('%Y-%m-%d')
+                data_batch[date].append(data)
+            
+            # use the date as the collection name
+            for date, data in data_batch.items():
+                collection = self.mongo_client['orderbook'][date]
+                # insert the data into the collection
+                await collection.insert_many(data)
 
-    async def run(self):
-        # Add initialization of the Redis connection to the run method.
-        await self.init_redis()
-        await super().run()
+    async def consume(self):
+        try:
+            await self.init_connections()
 
+            pubsub = self.redis_conn.pubsub()
+            channel = await pubsub.subscribe(self.channel)
+            self.logger.info(f'Subscribed to {self.channel}')
 
+            # Skip the first message (the subscription confirmation)
+            confirmation = await pubsub.get_message()
+            self.logger.info(f'Confirmation: {confirmation}')
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Binancefutures orderbook reader')
-    parser.add_argument('json_file', type=str, help='Json file containing arguments')
-    args = parser.parse_args()
+            while True:
+                message = await pubsub.get_message(ignore_subscribe_messages=True)
+                if message:
+                    data = json.loads(message['data'].decode('utf-8'))
+                    self.logger.info(f'{data=}, {self.queue.qsize()}')
+                    # commit the data to MongoDB
+                    await self.commit_to_mongo(data)
+                else:
+                    await asyncio.sleep(1)  # wait for a second if no message
 
-    with open(args.json_file, 'r') as f:
-        json_args = json.load(f)
-    
-    pub = json_args["pub"]
-    broker = json_args["broker"]
+        except Exception as e:
+            self.logger.error(f'Error occurred: {traceback.format_exc()}')
 
-    bnf = BNFOrderbookToRedis(pub['wss'], pub['symbol'], broker['url'], broker['channel'])
-    asyncio.run(bnf.run())
+        finally:
+            await pubsub.unsubscribe(self.channel)
+            self.redis_conn.close()
+            await self.redis_conn.wait_closed()
