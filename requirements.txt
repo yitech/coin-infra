@@ -1,16 +1,8 @@
 requests
 pandas
 websockets
-websocket-client
 fastapi
 uvicorn[standard]
 pymongo
-dnspython
-confluent-kafka
-influxdb-client
-flightsql-dbapi
-google-cloud-storage
-APScheduler
-psutil
-watchdog
+redis
 pytest
