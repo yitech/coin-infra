@@ -1,6 +1,0 @@
-{
-    "wss": "wss://fstream.binance.com/ws/btcusdt@depth5@100ms",
-    "symbol": "BTCUSDT",
-
-    "filepath": "/home/yite/coin-infra/artifact/data/binance_btcusdt"
-}
