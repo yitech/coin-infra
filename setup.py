@@ -1,17 +1,16 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='coin_infra',
-    version='1.1',
-    description='infrastration of coin project',
+    name='general',
+    version='2.0',
+    description='infra of coin projects',
     author='Yi Te',
     author_email='coastq22889@icloud.com',
     packages=find_packages(),
     install_requires=[
-        'numpy',
-        'pandas',
+        'pymongo',
+        'redis',
         'requests',
-        'websockets',
-        'websocket-client'
+        'websockets'
     ],
 )
