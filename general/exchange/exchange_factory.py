@@ -9,7 +9,7 @@ class ExchangeFactory:
         if exchange == BINANCEUM:
             return BinanceUMHandler(api[0], api[1])
         elif exchange == OKX:
-            return OKXHandler(api[0], api[1])
+            return OKXHandler(api[0], api[1], api[2])
         else:
             raise ValueError(f"{exchange} not implemented yet")
 
