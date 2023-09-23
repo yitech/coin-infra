@@ -11,6 +11,8 @@ setup(
         'pymongo',
         'redis',
         'requests',
-        'websockets'
+        'websockets',
+        'binance-futures-connector',
+        'ccxt'
     ],
 )
