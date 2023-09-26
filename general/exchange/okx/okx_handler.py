@@ -20,6 +20,7 @@ class OKXHandler(ExchangeHandler):
 
     @staticmethod
     def to_market_price(data):
+        data = data['data']
         return {
             '_id': data['seqId'],
             'ex': OKXHandler.NAME,

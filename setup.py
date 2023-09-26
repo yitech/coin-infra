@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='general',
-    version='2.5',
+    version='2.6',
     description='infra of coin projects',
     author='Yi Te',
     author_email='coastq22889@icloud.com',
