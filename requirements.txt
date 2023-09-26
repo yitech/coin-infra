@@ -5,6 +5,5 @@ fastapi
 uvicorn[standard]
 pymongo
 redis
-pytest
 binance-futures-connector
 ccxt

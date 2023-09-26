@@ -1,11 +1,10 @@
-import logging
 from general.exchange.type_enum import BINANCEUM
 from general.exchange.exchange_handler import ExchangeHandler
 from binance.um_futures import UMFutures
 from binance.error import ClientError
 from general.exchange.type_enum import (
-    BUY, SELL, MARKET, LIMIT,
-    GTC, IOC, FOK, POST_ONLY
+    MARKET, LIMIT,
+    GTC
 )
 
 
@@ -48,5 +47,3 @@ class BinanceUMHandler(ExchangeHandler):
             'a': data['a'][0][0],
             't': data['T']
         }
-
-

@@ -3,8 +3,7 @@ import ccxt
 from general.exchange.type_enum import OKX
 from general.exchange.exchange_handler import ExchangeHandler
 from general.exchange.type_enum import (
-    BUY, SELL, MARKET, LIMIT,
-    GTC, IOC, FOK, POST_ONLY
+    GTC
 )
 
 
