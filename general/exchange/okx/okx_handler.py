@@ -6,7 +6,7 @@ import ccxt
 class OKXHandler(ExchangeHandler):
     NAME = OKX
 
-    def __init__(self, api_key, api_secret, passphrase):
+    def __init__(self, api_key='', api_secret='', passphrase=''):
         self.okx = ccxt.okex5(
             {
                 'apiKey': api_key,

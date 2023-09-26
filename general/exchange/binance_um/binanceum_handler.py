@@ -6,8 +6,9 @@ from binance.um_futures import UMFutures
 class BinanceUMHandler(ExchangeHandler):
     NAME = BINANCEUM
 
-    def __init__(self, api_key, api_secret):
-        self.um_futures = UMFutures(key=api_key, secret=api_secret)
+    def __init__(self, api_key='', api_secret=''):
+        if api_key and api_secret:
+            self.um_futures = UMFutures(key=api_key, secret=api_secret)
 
     @staticmethod
     def to_market_price(data):
