@@ -9,6 +9,12 @@ class ExchangeHandler:
         else:
             self.logger = logging.Logger(ExchangeHandler.__name__)
 
+    def create_market_order(self, symbol, side, qty):
+        pass
+
+    def create_limit_order(self, symbol, side, qty, price, time_in_force):
+        pass
+
     @staticmethod
     def to_market_price(data: Dict) -> Dict:
         """
