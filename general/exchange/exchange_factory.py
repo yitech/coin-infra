@@ -14,4 +14,3 @@ class ExchangeFactory:
             return OKXHandler(api_args[0], api_args[1], api_args[2], kwargs.get('logger', None))
         else:
             raise ValueError(f"{exchange} not implemented yet")
-

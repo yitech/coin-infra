@@ -46,10 +46,3 @@ class FilePathUtil:
 
 # Initializing the custom log record factory
 logging.setLogRecordFactory(CustomLogRecord)
-
-
-# Sample usage:
-if __name__ == "__main__":
-    LOG_DIR = '/home/yite/PycharmProjects/coin-infra'
-    logger = LoggerConfig.setup_logger(LOG_DIR, "sample")
-    logger.info("This is a test message!")

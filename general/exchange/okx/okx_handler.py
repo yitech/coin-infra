@@ -47,4 +47,3 @@ class OKXHandler(ExchangeHandler):
             'a': data['asks'][0][0],
             't': int(data['ts'])
         }
-
