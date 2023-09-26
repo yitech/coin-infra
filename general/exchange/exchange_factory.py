@@ -5,11 +5,13 @@ from general.exchange.okx import OKXHandler
 
 class ExchangeFactory:
     @staticmethod
-    def get_handler(exchange: str, *api):
+    def get_handler(exchange: str, *api_args):
+        if not api_args:
+            api_args = ['', '', '']  # walk around undetermined api_args
         if exchange == BINANCEUM:
-            return BinanceUMHandler(api[0], api[1])
+            return BinanceUMHandler(api_args[0], api_args[1])
         elif exchange == OKX:
-            return OKXHandler(api[0], api[1], api[2])
+            return OKXHandler(api_args[0], api_args[1], api_args[2])
         else:
             raise ValueError(f"{exchange} not implemented yet")
 
