@@ -6,4 +6,4 @@ uvicorn[standard]
 pymongo
 redis
 binance-futures-connector
-ccxt
+python-okx>-0.2.1
