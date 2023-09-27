@@ -9,11 +9,11 @@ class TestOKXHandler(unittest.TestCase):
                                       passphrase='colw2q8+aU')
 
     def test_create_market_order(self):
-        res = self.okx_handler.create_market_order('LTC-USDT-SWAP', 'buy', 1.0, dry_run=False)
+        res = self.okx_handler.create_market_order('LTC','USDT', 'buy', 1.0, dry_run=True)
         self.assertTrue(res["data"])
 
     def test_create_limit_order(self):
-        res = self.okx_handler.create_limit_order('LTC-USDT-SWAP', 'buy', 1.0, 55, dry_run=False)
+        res = self.okx_handler.create_limit_order('LTC','USDT', 'buy', 1.0, 55, dry_run=True)
         self.assertTrue(res["data"])
 
     def test_to_market_price(self):
