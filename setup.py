@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='general',
-    version='3.1',
+    version='3.3',
     description='infra of coin projects',
     author='Yi Te',
     author_email='coastq22889@icloud.com',
@@ -13,6 +13,8 @@ setup(
         'requests',
         'websockets',
         'binance-futures-connector',
-        'ccxt'
+        'python-okx'
     ],
 )
+
+
