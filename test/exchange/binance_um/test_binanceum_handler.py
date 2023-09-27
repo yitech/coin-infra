@@ -2,10 +2,9 @@ import unittest
 from unittest.mock import patch
 from general.exchange.binance_um import BinanceUMHandler
 
-class TestBinanceUMHandler(unittest.TestCase):
 
-    @patch('binance.um_futures.UMFutures')  # Replace 'your_module_path_here' with the actual path to the UMFutures class
-    def setUp(self, MockUMFutures):
+class TestBinanceUMHandler(unittest.TestCase):
+    def setUp(self):
         self.binance_handler = BinanceUMHandler(api_key='4ir7rcqDpj85F4jMq9YqBYssJs8kmdMQuuE1wAG2yLFTpQ6auqax0CgiHR9bcpfC',
                                                 api_secret='TwnuVpetM5mRfpL7XqSQzcakFGjOKzAPyYBBkuskITq8jP9jof3x7fuNMlGHVm2v')
 

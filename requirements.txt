@@ -6,4 +6,5 @@ uvicorn[standard]
 pymongo
 redis
 binance-futures-connector
+git+https://github.com/coinrising/okex-api-v5.git
 ccxt
