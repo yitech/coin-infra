@@ -9,11 +9,11 @@ class TestBinanceUMHandler(unittest.TestCase):
                                                 api_secret='TwnuVpetM5mRfpL7XqSQzcakFGjOKzAPyYBBkuskITq8jP9jof3x7fuNMlGHVm2v')
 
     def test_create_market_order(self):
-        ret = self.binance_handler.create_market_order('LTCUSDT', 'BUY', 1, dry_run=True)
+        ret = self.binance_handler.create_market_order('LTC', 'USDT', 'BUY', 1, dry_run=True)
         self.assertEqual(ret['orderId'], 0)
 
     def test_create_limit_order(self):
-        ret = self.binance_handler.create_limit_order('LTCUSDT', 'BUY', 1, 50, dry_run=True)
+        ret = self.binance_handler.create_limit_order('LTC', 'USDT', 'BUY', 1, 50, dry_run=True)
         self.assertEqual(ret['orderId'], 0)
 
     def test_to_market_price(self):
