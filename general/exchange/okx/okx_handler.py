@@ -43,7 +43,7 @@ class OKXHandler(ExchangeHandler):
         return {
             '_id': data['seqId'],
             'ex': OKXHandler.NAME,
-            'b': data['bids'][0][0],
+            'b': data['bids'][0][0],    
             'a': data['asks'][0][0],
             't': int(data['ts'])
         }

@@ -15,9 +15,12 @@ class BinanceUMHandler(ExchangeHandler):
         super().__init__(logger)
         self.um_futures = UMFutures(key=api_key, secret=api_secret)
 
-    def create_market_order(self, symbol, side, qty):
+    def create_market_order(self, symbol, side, qty, dry_run=False):
         try:
-            ret = self.um_futures.new_order(symbol=symbol, side=side, type=MARKET, quantity=qty)
+            if dry_run:
+                ret = self.um_futures.new_order_test(symbol=symbol, side=side, type=MARKET, quantity=qty)
+            else:
+                ret = self.um_futures.new_order(symbol=symbol, side=side, type=MARKET, quantity=qty)
             return ret
         except ClientError as error:
             self.logger.error(
@@ -26,10 +29,14 @@ class BinanceUMHandler(ExchangeHandler):
                 )
             )
 
-    def create_limit_order(self, symbol, side, qty, price, time_in_force=GTC):
+    def create_limit_order(self, symbol, side, qty, price, time_in_force=GTC, dry_run=False):
         try:
-            ret = self.um_futures.new_order(symbol=symbol, side=side, type=LIMIT, quantity=qty, price=price,
-                                            timeInForce=time_in_force)
+            if dry_run:
+                ret = self.um_futures.new_order_test(symbol=symbol, side=side, type=LIMIT, quantity=qty, price=price,
+                                                     timeInForce=time_in_force)
+            else:
+                ret = self.um_futures.new_order(symbol=symbol, side=side, type=LIMIT, quantity=qty, price=price,
+                                                timeInForce=time_in_force)
             return ret
         except ClientError as error:
             self.logger.error(
