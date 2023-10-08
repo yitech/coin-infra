@@ -6,7 +6,7 @@ setup(
     description='infra of coin projects',
     author='Yi Te',
     author_email='coastq22889@icloud.com',
-    packages=find_packages(),
+    packages=['general'],
     install_requires=[
         'pymongo',
         'redis',
