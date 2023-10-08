@@ -6,4 +6,7 @@ uvicorn[standard]
 pymongo
 redis
 binance-futures-connector
-python-okx>-0.2.1
+python-okx
+setuptools
+wheel
+twine

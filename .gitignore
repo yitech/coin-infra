@@ -6,6 +6,10 @@ venv
 # Python
 __pycache__
 .pytest_cache
+.pypirc
+*.egg-info/
+dist/
+build/
 
 # credentials
 credentials
