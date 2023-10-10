@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='coin-infra',
-    version='4.0.1',
+    version='4.1.1',
     description='infra of coin projects',
     author='Yi Te',
     author_email='coastq22889@icloud.com',
@@ -13,7 +13,8 @@ setup(
         'requests',
         'websockets',
         'binance-futures-connector',
-        'python-okx'
+        'python-okx',
+        'influxdb-client'
     ],
 )
 
