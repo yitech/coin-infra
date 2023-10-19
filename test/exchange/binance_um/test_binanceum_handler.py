@@ -1,3 +1,4 @@
+import time
 import unittest
 from unittest.mock import patch
 from general.exchange.binance_um import BinanceUMHandler
@@ -15,6 +16,28 @@ class TestBinanceUMHandler(unittest.TestCase):
     def test_create_limit_order(self):
         ret = self.binance_handler.create_limit_order('LTC', 'USDT', 'BUY', 1, 50, dry_run=True)
         self.assertEqual(ret['orderId'], 0)
+
+    def test_get_orderbook(self):
+        ret = self.binance_handler.get_orderbook('LTC', 'USDT')
+        self.assertTrue(ret['bids'])
+        self.assertTrue(ret['asks'])
+
+    def test_cancel_all_order(self):
+        ret = self.binance_handler.create_limit_order('LTC', 'USDT', 'BUY', 1, 50, dry_run=False)
+        self.assertTrue(ret['status'], 'NEW')
+        time.sleep(3)
+        ret = self.binance_handler.cancel_all_order('LTC', 'USDT')
+        self.assertTrue(ret['code'], 200)
+
+    def test_get_open_order(self):
+        self.binance_handler.cancel_all_order('LTC', 'USDT')
+        ret = self.binance_handler.create_limit_order('LTC', 'USDT', 'BUY', 1, 55, dry_run=False)
+        print(ret)
+        ret = self.binance_handler.get_open_order('LTC', 'USDT')
+        print(ret)
+        self.binance_handler.cancel_all_order('LTC', 'USDT')
+
+
 
     def test_to_market_price(self):
         data = {
