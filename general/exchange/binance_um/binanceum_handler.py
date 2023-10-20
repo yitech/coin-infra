@@ -6,7 +6,9 @@ from general.exchange.type_enum import (
     MARKET, LIMIT,
     GTC
 )
-from .utils import to_side, to_symbol
+from .utils import (
+    to_side, to_symbol, to_trade_recorder, to_order, to_orderbook
+)
 
 
 def handle_client_error(func):
@@ -38,7 +40,7 @@ class BinanceUMHandler(ExchangeHandler):
         else:
             ret = self.um_futures.new_order(symbol=to_symbol(base, quote), side=to_side(side), type=MARKET,
                                             quantity=qty)
-        return ret
+        return to_order(ret)
 
     @handle_client_error
     def create_limit_order(self, base, quote, side, qty, price, time_in_force=GTC, dry_run=False):
@@ -48,7 +50,7 @@ class BinanceUMHandler(ExchangeHandler):
         else:
             ret = self.um_futures.new_order(symbol=to_symbol(base, quote), side=to_side(side), type=LIMIT, quantity=qty, price=price,
                                             timeInForce=time_in_force)
-        return ret
+        return to_order(ret)
 
     @handle_client_error
     def cancel_all_order(self, base, quote):
@@ -56,16 +58,20 @@ class BinanceUMHandler(ExchangeHandler):
         return ret
 
     @handle_client_error
-    def get_orderbook(self, base, quote):
-        ret = self.um_futures.depth(symbol=to_symbol(base, quote))
-        return ret
+    def get_orderbook(self, base, quote, limit=10):
+        ret = self.um_futures.depth(symbol=to_symbol(base, quote), limit=limit)
+        return to_orderbook(ret)
 
     @handle_client_error
     def get_open_order(self, base, quote):
         ret = self.um_futures.get_all_orders(symbol=to_symbol(base, quote))
-        print(f"{ret=}")
         ret = list(filter(lambda order: order["status"] == 'NEW', ret))
-        return ret
+        return list(map(to_order, ret))
+
+    @handle_client_error
+    def get_account_trades(self, base, quote):
+        ret = self.um_futures.get_account_trades(symbol=to_symbol(base, quote))
+        return list(map(to_trade_recorder, ret))
 
     @staticmethod
     def to_market_price(data):
