@@ -1,8 +1,9 @@
 import unittest
-from general.mutithread import ThreadPool
+import time
+from general.mutithread import Parallelism
 
 
-class TestThreadPool(unittest.TestCase):
+class TestParallelism(unittest.TestCase):
     def test_add_function(self):
         results = []
 
@@ -12,7 +13,7 @@ class TestThreadPool(unittest.TestCase):
             results.append(result)
 
         # Initialize thread pool with 4 workers
-        pool = ThreadPool(4)
+        pool = Parallelism(4)
 
         # Data for testing
         test_data = [(1, 2), (2, 3), (3, 4), (4, 5), (5, 6),
@@ -23,14 +24,7 @@ class TestThreadPool(unittest.TestCase):
             pool.add_job(add_and_store, data)
 
         # Wait for all jobs to complete
-        while not pool.queue.empty():
-            pass
-
-        # Ensure a slight delay to allow worker threads to process
-        # This isn't the most elegant solution, but it ensures that
-        # the worker threads have processed any remaining tasks.
-        import time
-        time.sleep(0.5)
+        pool.wait_completion()
 
         # Check that all jobs were executed
         self.assertEqual(len(results), 10)
