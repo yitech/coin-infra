@@ -52,6 +52,19 @@ class TestOKXHandler(unittest.TestCase):
         }
         self.assertEqual(res, expected)
 
+    def test_to_orderbook(self):
+        data = {"data": [
+            {"asks": [["64.73", "536", "0", "13"], ["64.74", "956", "0", "18"]],
+             "bids": [["64.72", "48", "0", "1"], ["64.71", "872", "0", "16"]],
+             "instId": "LTC-USDT-SWAP", "ts": "1697896467806"}]}
+        res = OKXHandler.to_orderbook(data)
+        expected = {
+            'exchange': 'OKX',
+            'timestamp': '1697896467806',
+            'ask': [(64.73, 536.0), (64.74, 956.0)],
+            'bid': [(64.72, 48.0), (64.71, 872.0)]
+        }
+
 
 if __name__ == '__main__':
     unittest.main()

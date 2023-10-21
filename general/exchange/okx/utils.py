@@ -44,7 +44,7 @@ def to_order(order) -> Order:
 def to_orderbook(orderbook) -> Orderbook:
     return Orderbook(
         exchange='OKX',
-        timestamp=orderbook['ts'],
+        timestamp=int(orderbook['ts']),
         ask=[(float(price), float(qty)) for price, qty, _, _ in orderbook['asks']],
         bid=[(float(price), float(qty)) for price, qty, _, _ in orderbook['bids']],
     )

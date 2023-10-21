@@ -1,4 +1,5 @@
 import traceback
+from dataclasses import asdict
 from okx.Trade import TradeAPI
 from okx.MarketData import MarketAPI
 from general.exchange.type_enum import OKX
@@ -89,3 +90,8 @@ class OKXHandler(ExchangeHandler):
             'a': data['asks'][0][0],
             't': int(data['ts'])
         }
+
+    @staticmethod
+    def to_orderbook(data):
+        data = data['data'][0]
+        return asdict(to_orderbook(data))
