@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from general.exchange.type_enum import BINANCEUM
 from general.exchange.exchange_handler import ExchangeHandler
 from binance.um_futures import UMFutures
@@ -79,6 +80,9 @@ class BinanceUMHandler(ExchangeHandler):
             '_id': data['E'],
             'ex': BinanceUMHandler.NAME,
             'b': data['b'][0][0],
+            'bv': data['b'][0][1],
             'a': data['a'][0][0],
+            'av': data['a'][0][1],
             't': data['T']
         }
+

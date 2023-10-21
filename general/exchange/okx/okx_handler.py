@@ -86,12 +86,10 @@ class OKXHandler(ExchangeHandler):
         return {
             '_id': data['seqId'],
             'ex': OKXHandler.NAME,
-            'b': data['bids'][0][0],    
-            'a': data['asks'][0][0],
+            'b': float(data['bids'][0][0]),
+            'bv': float(data['bids'][0][1]),
+            'a': float(data['asks'][0][0]),
+            'av': float(data['asks'][0][1]),
             't': int(data['ts'])
         }
 
-    @staticmethod
-    def to_orderbook(data):
-        data = data['data'][0]
-        return asdict(to_orderbook(data))

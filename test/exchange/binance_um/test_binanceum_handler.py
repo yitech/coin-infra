@@ -45,16 +45,18 @@ class TestBinanceUMHandler(unittest.TestCase):
     def test_to_market_price(self):
         data = {
             'E': 'test_id',
-            'b': [['price_b', 'volume_b']],
-            'a': [['price_a', 'volume_a']],
-            'T': 'test_time'
+            'b': [[100, 2]],
+            'a': [[105, 2.5]],
+            'T': 123456789
         }
         expected = {
             '_id': 'test_id',
             'ex': 'BinanceUM',
-            'b': 'price_b',
-            'a': 'price_a',
-            't': 'test_time'
+            'b': 100,
+            'bv': 2,
+            'a': 105,
+            'av': 2.5,
+            't': 123456789
         }
         self.assertEqual(BinanceUMHandler.to_market_price(data), expected)
 
