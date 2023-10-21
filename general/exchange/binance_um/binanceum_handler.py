@@ -11,7 +11,7 @@ from .utils import (
 )
 
 
-def handle_client_error(func):
+def exception_handler(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -32,7 +32,7 @@ class BinanceUMHandler(ExchangeHandler):
         super().__init__(logger)
         self.um_futures = UMFutures(key=api_key, secret=api_secret)
 
-    @handle_client_error
+    @exception_handler
     def create_market_order(self, base, quote, side, qty, dry_run=False):
         if dry_run:
             ret = self.um_futures.new_order_test(symbol=to_symbol(base, quote), side=to_side(side), type=MARKET,
@@ -42,7 +42,7 @@ class BinanceUMHandler(ExchangeHandler):
                                             quantity=qty)
         return to_order(ret)
 
-    @handle_client_error
+    @exception_handler
     def create_limit_order(self, base, quote, side, qty, price, time_in_force=GTC, dry_run=False):
         if dry_run:
             ret = self.um_futures.new_order_test(symbol=to_symbol(base, quote), side=to_side(side), type=LIMIT, quantity=qty, price=price,
@@ -52,23 +52,23 @@ class BinanceUMHandler(ExchangeHandler):
                                             timeInForce=time_in_force)
         return to_order(ret)
 
-    @handle_client_error
+    @exception_handler
     def cancel_all_order(self, base, quote):
         ret = self.um_futures.cancel_open_orders(symbol=to_symbol(base, quote))
         return ret
 
-    @handle_client_error
+    @exception_handler
     def get_orderbook(self, base, quote, limit=10):
         ret = self.um_futures.depth(symbol=to_symbol(base, quote), limit=limit)
         return to_orderbook(ret)
 
-    @handle_client_error
+    @exception_handler
     def get_open_order(self, base, quote):
         ret = self.um_futures.get_all_orders(symbol=to_symbol(base, quote))
         ret = list(filter(lambda order: order["status"] == 'NEW', ret))
         return list(map(to_order, ret))
 
-    @handle_client_error
+    @exception_handler
     def get_account_trades(self, base, quote):
         ret = self.um_futures.get_account_trades(symbol=to_symbol(base, quote))
         return list(map(to_trade_recorder, ret))

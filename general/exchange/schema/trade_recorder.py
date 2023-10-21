@@ -10,6 +10,3 @@ class TradeRecorder:
     side: str
     price: float
     qty: float
-    fee: float
-    fee_quote: str
-    is_maker: bool

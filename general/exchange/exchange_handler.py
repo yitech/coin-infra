@@ -15,6 +15,18 @@ class ExchangeHandler:
     def create_limit_order(self, base, quote, side, qty, price, time_in_force, dry_run):
         pass
 
+    def cancel_all_order(self, base, quote):
+        pass
+
+    def get_orderbook(self, base, quote, limit):
+        pass
+
+    def get_open_order(self, base, quote):
+        pass
+
+    def get_account_trades(self, base, quote):
+        pass
+
     @staticmethod
     def to_market_price(data: Dict) -> Dict:
         """

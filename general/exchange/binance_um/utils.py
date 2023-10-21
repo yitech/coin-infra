@@ -18,15 +18,13 @@ def to_trade_recorder(record) -> TradeRecorder:
         quote=record['symbol'][-4:],
         side=record['side'],
         price=float(record['price']),
-        qty=float(record['qty']),
-        fee=float(record['commission']),
-        fee_quote=record['commissionAsset'],
-        is_maker=record['maker']
+        qty=float(record['qty'])
     )
 
 
 def to_order(order) -> Order:
     return Order(
+        exchange='BinanceUM',
         order_id=order['orderId'],
         status=order['status'],
         updated_time=order['updateTime'],
@@ -41,6 +39,7 @@ def to_order(order) -> Order:
 
 def to_orderbook(orderbook) -> Orderbook:
     return Orderbook(
+        exchange='BinanceUM',
         timestamp=orderbook['T'],
         ask=[(float(price), float(qty)) for price, qty in orderbook['asks']],
         bid=[(float(price), float(qty)) for price, qty in orderbook['bids']]
