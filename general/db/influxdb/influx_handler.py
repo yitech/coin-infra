@@ -1,6 +1,6 @@
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
-
+from influxdb_client.rest import ApiException
 
 class InfluxHandler:
     def __init__(self, url, token, batch_size=1000):
@@ -9,6 +9,14 @@ class InfluxHandler:
         self.bucket = None
         self.batch_size = batch_size
         self.points = []
+
+        # Check for connection and authorization
+        try:
+            self.client.ready()
+        except ApiException as e:
+            print(f"Failed to connect to InfluxDB at {url}: {e}")
+            self.client.__del__()
+            raise
 
     def set_org(self, org_name):
         self.org = org_name
