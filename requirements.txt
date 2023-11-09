@@ -8,6 +8,7 @@ redis
 binance-futures-connector
 python-okx
 influxdb-client
+pika
 setuptools
 wheel
 twine
